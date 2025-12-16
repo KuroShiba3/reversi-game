@@ -2,6 +2,7 @@ from uuid import UUID, uuid4
 
 from .board import Board
 from .disc import Disc
+from .position import Position
 
 class Game:
     def __init__(self, id: UUID, board: Board, current_player: Disc.BLACK | Disc.WHITE):
@@ -30,5 +31,10 @@ class Game:
     def current_player(self) -> Disc.BLACK | Disc.WHITE:
         return self._current_player
 
-    def get_valid_moves(self) -> list[tuple[int, int]]:
+    def place_disc(self, position: Position, disc: Disc.BLACK | Disc.WHITE) -> None:
+        self.board.place_disc(position, disc)
+        # ターンを次のプレイヤーに切り替え
+        self._current_player = Disc.WHITE if disc == Disc.BLACK else Disc.BLACK
+
+    def get_valid_moves(self) -> list[Position]:
         return self.board.get_valid_moves(self.current_player)
