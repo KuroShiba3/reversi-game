@@ -28,19 +28,35 @@ class Board:
     def cells(self) -> dict[Position, Disc]:
         return self._cells
 
-    def get_valid_moves(self, player: Disc.BLACK | Disc.WHITE) -> list[Position]:
+    def place_disc(self, position: Position, disc: Disc.BLACK | Disc.WHITE) -> None:
+        """指定された位置に石を置き、裏返す"""
+        if not self._can_place(position, disc):
+            raise ValueError("Cannot place disc at the specified position.")
+
+        self._cells[position] = disc
+
+        # 8方向に対して裏返し処理を行う
+        directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1),
+                      (0, 1), (1, -1), (1, 0), (1, 1)]
+
+        for dr, dc in directions:
+            positions = self._get_flippable_positions_in_direction(position, disc, dr, dc)
+            for pos in positions:
+                self._cells[pos] = disc
+
+    def get_valid_moves(self, disc: Disc.BLACK | Disc.WHITE) -> list[Position]:
         """指定されたプレイヤーが置ける位置を返す"""
         valid_positions = []
 
         for row in range(8):
             for col in range(8):
                 pos = Position(row, col)
-                if self._can_place(pos, player):
+                if self._can_place(pos, disc):
                     valid_positions.append(pos)
 
         return valid_positions
 
-    def _can_place(self, position: Position, player: Disc.BLACK | Disc.WHITE) -> bool:
+    def _can_place(self, position: Position, disc: Disc.BLACK | Disc.WHITE) -> bool:
         """指定された位置に石を置けるかチェック"""
         # マスが空でなければ置けない
         if self._cells[position] != Disc.EMPTY:
@@ -51,26 +67,29 @@ class Board:
                       (0, 1), (1, -1), (1, 0), (1, 1)]
 
         for dr, dc in directions:
-            if self._can_flip_in_direction(position, player, dr, dc):
+            if len(self._get_flippable_positions_in_direction(position, disc, dr, dc)) > 0:
                 return True
 
         return False
 
-    def _can_flip_in_direction(self, position: Position, player: Disc, dr: int, dc: int) -> bool:
-        """指定された方向に裏返せる石があるかチェック"""
-        opponent = Disc.WHITE if player == Disc.BLACK else Disc.BLACK
+    def _get_flippable_positions_in_direction(self, position: Position, disc: Disc.BLACK | Disc.WHITE, dr: int, dc: int) -> list[Position]:
+        """指定された方向で裏返せる石の位置を返す"""
+        opponent = Disc.WHITE if disc == Disc.BLACK else Disc.BLACK
+        positions_to_flip = []
 
         row = position.row + dr
         col = position.col + dc
 
         # 最初のマスが盤面内かチェック
         if not self._is_valid_position(row, col):
-            return False
+            return []
 
         # 最初のマスが相手の石かチェック
         first_pos = Position(row, col)
         if self._cells[first_pos] != opponent:
-            return False
+            return []
+
+        positions_to_flip.append(first_pos)
 
         # 相手の石が続く間、進む
         row += dr
@@ -78,22 +97,23 @@ class Board:
 
         while self._is_valid_position(row, col):
             pos = Position(row, col)
-            disc = self._cells[pos]
+            _disc = self._cells[pos]
 
-            # 自分の石が見つかったら裏返せる
-            if disc == player:
-                return True
+            # 自分の石が見つかったら裏返せる位置のリストを返す
+            if _disc == disc:
+                return positions_to_flip
 
             # 空のマスが見つかったら裏返せない
-            if disc == Disc.EMPTY:
-                return False
+            if _disc == Disc.EMPTY:
+                return []
 
-            # disc == opponent なので続ける
+            # 相手の石なので追加して続ける
+            positions_to_flip.append(pos)
             row += dr
             col += dc
 
         # 盤面外に出たら裏返せない
-        return False
+        return []
 
     def _is_valid_position(self, row: int, col: int) -> bool:
         """位置が盤面内かチェック"""
