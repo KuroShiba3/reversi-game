@@ -6,7 +6,7 @@ class Board:
         self._cells = cells
 
     @classmethod
-    def create() -> 'Board':
+    def create(cls) -> 'Board':
         cells = {}
         for row in range(8):
             for col in range(8):
