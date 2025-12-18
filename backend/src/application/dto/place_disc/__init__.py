@@ -1,2 +1,1 @@
 from .place_disc_input_dto import PlaceDiscInputDTO
-from .place_disc_output_dto import PlaceDiscOutputDTO
