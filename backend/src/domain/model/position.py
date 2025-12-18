@@ -6,6 +6,14 @@ class Position:
         self._row = row
         self._col = col
 
+    def __eq__(self, other):
+        if not isinstance(other, Position):
+            return False
+        return self.row == other.row and self.col == other.col
+
+    def __hash__(self):
+        return hash((self.row, self.col))
+
     @property
     def row(self) -> int:
         return self._row
