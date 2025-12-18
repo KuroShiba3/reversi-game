@@ -1,0 +1,32 @@
+from uuid import UUID
+
+from ...domain.repository.game_repository import IGameRepository
+from ...domain.model.game_status import GameStatus
+from ..dto.pass_turn import PassTurnInputDTO
+
+
+class PassTurn:
+    def __init__(self, game_repository: IGameRepository):
+        self._game_repository = game_repository
+
+    async def execute(self, input_dto: PassTurnInputDTO) -> None:
+        game = await self._game_repository.find_by_id(UUID(input_dto.game_id))
+
+        if game is None:
+            raise ValueError(f"ゲームが見つかりません: {input_dto.game_id}")
+
+        if game.status == GameStatus.FINISHED:
+            raise ValueError("ゲームはすでに終了しています。")
+
+        # 現在のプレイヤーが本当にパスする必要があるかチェック
+        if game.can_current_player_move():
+            raise ValueError("現在のプレイヤーは有効な手があるため、パスできません。")
+
+        game.pass_turn()
+
+        # パス後にゲーム終了判定（finish()でGame内にresultを保持）
+        if game.is_game_over():
+            game.finish()
+
+        # ゲームを保存（終了していればresultも1トランザクションで保存）
+        await self._game_repository.save(game)
