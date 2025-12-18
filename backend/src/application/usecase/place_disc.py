@@ -1,19 +1,33 @@
-from ..dto.place_disc import PlaceDiscInputDTO, PlaceDiscOutputDTO
+from uuid import UUID
+
+from ..dto.place_disc import PlaceDiscInputDTO
 from ...domain.model.position import Position
 from ...domain.model.disc import Disc
+from ...domain.model.game_status import GameStatus
+from ...domain.repository.game_repository import IGameRepository
+
 
 class PlaceDisc:
-    def __init__(self, game_repository):
-        self.game_repository = game_repository
+    def __init__(self, game_repository: IGameRepository):
+        self._game_repository = game_repository
 
-    def execute(self, input_dto: PlaceDiscInputDTO) -> PlaceDiscOutputDTO:
-        game = self.game_repository.find_by_id(input_dto.game_id)
+    async def execute(self, input_dto: PlaceDiscInputDTO) -> None:
+        game = await self._game_repository.find_by_id(UUID(input_dto.game_id))
+
+        if game is None:
+            raise ValueError(f"ゲームが見つかりません: {input_dto.game_id}")
+
+        if game.status == GameStatus.FINISHED:
+            raise ValueError("ゲームはすでに終了しています。")
+
         disc = Disc[input_dto.disc]
         position = Position(input_dto.position["row"], input_dto.position["col"])
+
         game.place_disc(position, disc)
-        self.game_repository.save(game)
-        board_state = [
-            {"row": pos.row, "col": pos.col, "disc": disc.name}
-            for pos, disc in game.board.cells.items()
-        ]
-        return PlaceDiscOutputDTO(board_state, game.current_player.name)
+
+        # ゲーム終了判定（finish()でGame内にresultを保持）
+        if game.is_game_over():
+            game.finish()
+
+        # ゲームを保存（終了していればresultも1トランザクションで保存）
+        await self._game_repository.save(game)
