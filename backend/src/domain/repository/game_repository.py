@@ -4,7 +4,7 @@ from uuid import UUID
 from ..model.game import Game
 
 
-class IGameRepository(ABC):
+class GameRepository(ABC):
     @abstractmethod
     async def save(self, game: Game) -> None:
         """
