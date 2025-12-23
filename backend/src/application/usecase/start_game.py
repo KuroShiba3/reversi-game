@@ -1,9 +1,9 @@
-from ...domain.repository.game_repository import IGameRepository
+from ...domain.repository.game_repository import GameRepository
 from ...domain.model.game import Game
 from ..dto.start_game import StartGameOutputDTO
 
 class StartGame:
-    def __init__(self, game_repository: IGameRepository):
+    def __init__(self, game_repository: GameRepository):
         self._game_repository = game_repository
 
     async def execute(self) -> StartGameOutputDTO:
