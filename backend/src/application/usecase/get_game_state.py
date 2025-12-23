@@ -1,11 +1,11 @@
 from uuid import UUID
 
-from ...domain.repository.game_repository import IGameRepository
+from ...domain.repository.game_repository import GameRepository
 from ..dto.get_game_state import GetGameStateInputDTO, GetGameStateOutputDTO
 
 
 class GetGameState:
-    def __init__(self, game_repository: IGameRepository):
+    def __init__(self, game_repository: GameRepository):
         self._game_repository = game_repository
 
     async def execute(self, input_dto: GetGameStateInputDTO) -> GetGameStateOutputDTO:

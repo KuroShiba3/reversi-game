@@ -1,12 +1,12 @@
 from uuid import UUID
 
-from ...domain.repository.game_repository import IGameRepository
+from ...domain.repository.game_repository import GameRepository
 from ...domain.model.game_status import GameStatus
 from ..dto.pass_turn import PassTurnInputDTO
 
 
 class PassTurn:
-    def __init__(self, game_repository: IGameRepository):
+    def __init__(self, game_repository: GameRepository):
         self._game_repository = game_repository
 
     async def execute(self, input_dto: PassTurnInputDTO) -> None:

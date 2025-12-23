@@ -1,11 +1,11 @@
 from uuid import UUID
 
 from ..dto.get_valid_moves import GetValidMovesInputDTO, GetValidMovesOutputDTO
-from ...domain.repository.game_repository import IGameRepository
+from ...domain.repository.game_repository import GameRepository
 
 
 class GetValidMoves:
-    def __init__(self, game_repository: IGameRepository):
+    def __init__(self, game_repository: GameRepository):
         self._game_repository = game_repository
 
     async def execute(self, input_dto: GetValidMovesInputDTO) -> GetValidMovesOutputDTO:

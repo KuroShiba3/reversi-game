@@ -4,11 +4,11 @@ from ..dto.place_disc import PlaceDiscInputDTO
 from ...domain.model.position import Position
 from ...domain.model.disc import Disc
 from ...domain.model.game_status import GameStatus
-from ...domain.repository.game_repository import IGameRepository
+from ...domain.repository.game_repository import GameRepository
 
 
 class PlaceDisc:
-    def __init__(self, game_repository: IGameRepository):
+    def __init__(self, game_repository: GameRepository):
         self._game_repository = game_repository
 
     async def execute(self, input_dto: PlaceDiscInputDTO) -> None:
