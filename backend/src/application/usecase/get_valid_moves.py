@@ -8,8 +8,8 @@ class GetValidMoves:
     def __init__(self, game_repository: IGameRepository):
         self._game_repository = game_repository
 
-    def execute(self, input_dto: GetValidMovesInputDTO) -> GetValidMovesOutputDTO:
-        game = self._game_repository.find_by_id(UUID(input_dto.game_id))
+    async def execute(self, input_dto: GetValidMovesInputDTO) -> GetValidMovesOutputDTO:
+        game = await self._game_repository.find_by_id(UUID(input_dto.game_id))
 
         if game is None:
             raise ValueError(f"ゲームが見つかりません: {input_dto.game_id}")

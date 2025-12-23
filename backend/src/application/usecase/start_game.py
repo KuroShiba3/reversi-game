@@ -6,9 +6,9 @@ class StartGame:
     def __init__(self, game_repository: IGameRepository):
         self._game_repository = game_repository
 
-    def execute(self) -> StartGameOutputDTO:
+    async def execute(self) -> StartGameOutputDTO:
         new_game = Game.create()
-        self._game_repository.save(new_game)
+        await self._game_repository.save(new_game)
 
         board_state = [
             {"row": pos.row, "col": pos.col, "disc": disc.name}
