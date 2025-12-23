@@ -1,11 +1,11 @@
 from uuid import UUID
 from psycopg_pool import AsyncConnectionPool
 
-from src.domain.repository.game_repository import IGameRepository
+from src.domain.repository.game_repository import GameRepository
 from src.domain.model import Game, Board, Disc, Position, GameStatus
 
 
-class GameRepositoryImpl(IGameRepository):
+class GameRepositoryImpl(GameRepository):
     """ゲームリポジトリのPostgreSQL実装"""
 
     def __init__(self, pool: AsyncConnectionPool):
