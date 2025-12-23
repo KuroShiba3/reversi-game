@@ -6,15 +6,19 @@ services:
     volumes:
       - ./backend/src:/app/src
       - ./backend/migrations:/app/migrations
-      - ./backend/alembic.ini:/app/alembic.ini
     ports:
       - "8000:8000"
     env_file:
       - ./backend/.env
     depends_on:
       - db
+    command: uv run --no-sync python -m src.main
+    networks:
+      - reversi-network
+
   db:
-    image: postgres:13
+    image: postgres:16-alpine
+    container_name: reversi-postgres
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
@@ -23,15 +27,29 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    networks:
+      - reversi-network
 
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - "8080:8080"
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: reversi-pgadmin
     environment:
-      ADMINER_DEFAULT_SERVER: db
-      ADMINER_DESIGN: pepa-linha
+      PGADMIN_DEFAULT_EMAIL: admin@reversi.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    depends_on:
+      - db
+    networks:
+      - reversi-network
 
 volumes:
   pgdata:
+  pgadmin-data:
+
+networks:
+  reversi-network:
