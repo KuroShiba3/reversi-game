@@ -7,7 +7,7 @@ from .game_status import GameStatus
 from .position import Position
 
 class Game:
-    def __init__(self, id: UUID, board: Board, current_player: Disc.BLACK | Disc.WHITE, status: GameStatus, result: GameResult | None = None):
+    def __init__(self, id: UUID, board: Board, current_player: Disc, status: GameStatus, result: GameResult | None = None):
         self._id = id
         self._board = board
         self._current_player = current_player
@@ -20,7 +20,7 @@ class Game:
         return cls(uuid4(), board, Disc.BLACK, GameStatus.PLAYING)
 
     @classmethod
-    def reconstruct(cls, id: UUID, board: Board, current_player: Disc.BLACK | Disc.WHITE, status: GameStatus) -> 'Game':
+    def reconstruct(cls, id: UUID, board: Board, current_player: Disc, status: GameStatus) -> 'Game':
         return cls(id, board, current_player, status)
 
     @property
@@ -32,7 +32,7 @@ class Game:
         return self._board
 
     @property
-    def current_player(self) -> Disc.BLACK | Disc.WHITE:
+    def current_player(self) -> Disc:
         return self._current_player
 
     @property
@@ -43,12 +43,12 @@ class Game:
     def result(self) -> GameResult | None:
         return self._result
 
-    def place_disc(self, position: Position, disc: Disc.BLACK | Disc.WHITE) -> None:
+    def place_disc(self, position: Position, disc: Disc) -> None:
         self.board.place_disc(position, disc)
         # ターンを次のプレイヤーに切り替え
         self._current_player = Disc.WHITE if disc == Disc.BLACK else Disc.BLACK
 
-    def get_valid_moves(self, disc: Disc.BLACK | Disc.WHITE | None = None) -> list[Position]:
+    def get_valid_moves(self, disc: Disc | None = None) -> list[Position]:
         """
         指定されたプレイヤーの有効な手を取得
         discが指定されない場合は現在のプレイヤーの有効な手を返す
