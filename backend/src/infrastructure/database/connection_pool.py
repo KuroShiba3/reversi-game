@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 from psycopg_pool import AsyncConnectionPool
 from psycopg.rows import dict_row
 
-from src.config.config import POSTGRES_URL
+from ...config import POSTGRES_URL
 
 
 class DatabasePool:
