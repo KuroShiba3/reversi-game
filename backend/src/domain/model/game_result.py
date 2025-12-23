@@ -8,7 +8,7 @@ class GameResult:
     def __init__(
         self,
         game_id: UUID,
-        winner: Disc.BLACK | Disc.WHITE | None,  # None = DRAW
+        winner: Disc | None,  # None = DRAW
         black_score: int,
         white_score: int,
         finished_at: datetime,
@@ -42,7 +42,7 @@ class GameResult:
     def reconstruct(
         cls,
         game_id: UUID,
-        winner: Disc.BLACK | Disc.WHITE | None,
+        winner: Disc | None,
         black_score: int,
         white_score: int,
         finished_at: datetime,
@@ -55,7 +55,7 @@ class GameResult:
         return self._game_id
 
     @property
-    def winner(self) -> Disc.BLACK | Disc.WHITE | None:
+    def winner(self) -> Disc | None:
         return self._winner
 
     @property
