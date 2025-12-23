@@ -9,7 +9,7 @@ logger = get_logger(__name__)
 
 def run_migrations():
     try:
-        migrations_dir = Path(__file__).parent.parent.parent / "migrations"
+        migrations_dir = Path(__file__).parent.parent.parent.parent / "migrations"
 
         if not migrations_dir.exists():
             logger.warning(f"マイグレーションフォルダが存在しません: {migrations_dir}")
