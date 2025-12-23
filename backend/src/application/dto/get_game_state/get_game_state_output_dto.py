@@ -6,3 +6,4 @@ class GetGameStateOutputDTO:
     current_player: str
     black_score: int
     white_score: int
+    status: str
