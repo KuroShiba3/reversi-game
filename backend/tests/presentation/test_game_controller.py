@@ -8,7 +8,7 @@ from src.presentation.schemas import (
     CellState,
     Position,
 )
-from src.domain.model import Game, Disc, Position as DomainPosition
+from src.domain.model import Game, Disc, Position as DomainPosition, Board
 
 from tests.repository import InMemoryGameRepository
 
