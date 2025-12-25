@@ -18,7 +18,6 @@ services:
 
   db:
     image: postgres:16-alpine
-    container_name: reversi-postgres
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
@@ -32,7 +31,6 @@ services:
 
   pgadmin:
     image: dpage/pgadmin4:latest
-    container_name: reversi-pgadmin
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@reversi.com
       PGADMIN_DEFAULT_PASSWORD: admin
