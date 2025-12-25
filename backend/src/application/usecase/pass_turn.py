@@ -1,7 +1,7 @@
 from uuid import UUID
 
-from ...domain.repository.game_repository import GameRepository
-from ...domain.model.game_status import GameStatus
+from ...domain.repository import GameRepository
+from ...domain.model import GameStatus
 from ..dto.pass_turn import PassTurnInput
 
 
