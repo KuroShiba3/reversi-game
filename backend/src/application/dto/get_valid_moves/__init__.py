@@ -1,2 +1,4 @@
 from .get_valid_moves_input import GetValidMovesInput
 from .get_valid_moves_output import GetValidMovesOutput
+
+__all__ = ["GetValidMovesInput", "GetValidMovesOutput"]
