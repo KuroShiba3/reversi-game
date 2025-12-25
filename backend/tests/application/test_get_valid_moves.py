@@ -2,11 +2,8 @@ import pytest
 from uuid import uuid4
 
 from src.application.dto.get_valid_moves import GetValidMovesInput
-from src.application.usecase.get_valid_moves import GetValidMoves
-from src.domain.model.game import Game
-from src.domain.model.disc import Disc
-from src.domain.model.position import Position
-from src.domain.model.game_status import GameStatus
+from src.application.usecase import GetValidMoves
+from src.domain.model import Game, Disc, Position, GameStatus
 
 from tests.application.in_memory_game_repository import InMemoryGameRepository
 
