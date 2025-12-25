@@ -2,12 +2,8 @@ import pytest
 from uuid import uuid4
 
 from src.application.dto.place_disc import PlaceDiscInput
-from src.application.usecase.place_disc import PlaceDisc
-from src.domain.model.game import Game
-from src.domain.model.disc import Disc
-from src.domain.model.position import Position
-from src.domain.model.game_status import GameStatus
-from src.domain.model.board import Board
+from src.application.usecase import PlaceDisc
+from src.domain.model import Game, Disc, Position, GameStatus, Board
 
 from tests.application.in_memory_game_repository import InMemoryGameRepository
 

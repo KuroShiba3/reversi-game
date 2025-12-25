@@ -1,9 +1,8 @@
 import pytest
 from uuid import UUID
 
-from src.application.usecase.start_game import StartGame
-from src.domain.model.disc import Disc
-from src.domain.model.position import Position
+from src.application.usecase import StartGame
+from src.domain.model import Disc, Position
 
 from tests.application.in_memory_game_repository import InMemoryGameRepository
 
@@ -125,11 +124,11 @@ async def test_start_game_multiple_games(repository, usecase):
 
 
 async def test_start_game_returns_output_dto(repository, usecase):
-    """StartGameOutputDTOを返す"""
+    """StartGameOutputを返す"""
     # Act: 新規ゲームを開始
     result = await usecase.execute()
 
-    # Assert: OutputDTOの型を確認
+    # Assert: Outputの型を確認
     from src.application.dto.start_game import StartGameOutput
     assert isinstance(result, StartGameOutput)
 
