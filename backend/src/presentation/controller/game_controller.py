@@ -4,16 +4,18 @@ from ..schemas import (
     CellState,
     Position,
 )
-from ...application.usecase.start_game import StartGame
-from ...application.usecase.get_game_state import GetGameState
-from ...application.usecase.get_valid_moves import GetValidMoves
-from ...application.usecase.place_disc import PlaceDisc
-from ...application.usecase.pass_turn import PassTurn
-from ...application.dto.get_game_state import GetGameStateInput
-from ...application.dto.get_valid_moves import GetValidMovesInput
+from ...application.usecase import (
+    StartGame,
+    GetGameState,
+    GetValidMoves,
+    PlaceDisc,
+    PassTurn,
+)
+from ...application.dto.get_game_state import GetGameStateInput, GetGameStateOutput
+from ...application.dto.get_valid_moves import GetValidMovesInput, GetValidMovesOutput
 from ...application.dto.place_disc import PlaceDiscInput
 from ...application.dto.pass_turn import PassTurnInput
-from ...domain.repository.game_repository import GameRepository
+from ...domain.repository import GameRepository
 
 
 class GameController:
