@@ -3,7 +3,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from .schemas import StartGameResponse, GameStateResponse, PlaceDiscRequest
 from .controller import GameController
 from ..infrastructure.database.connection_pool import DatabasePool
-from ..infrastructure.repository.game_repository_impl import GameRepositoryImpl
+from ..infrastructure.repository import GameRepositoryImpl
 
 router = APIRouter(prefix="/api/games", tags=["games"])
 
