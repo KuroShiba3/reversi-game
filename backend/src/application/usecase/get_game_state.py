@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from ...domain.repository.game_repository import GameRepository
+from ...domain.repository import GameRepository
 from ..dto.get_game_state import GetGameStateInput, GetGameStateOutput
 
 
