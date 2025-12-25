@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from ..dto.place_disc import PlaceDiscInputDTO
+from ..dto.place_disc import PlaceDiscInput
 from ...domain.model.position import Position
 from ...domain.model.disc import Disc
 from ...domain.model.game_status import GameStatus
@@ -11,7 +11,7 @@ class PlaceDisc:
     def __init__(self, game_repository: GameRepository):
         self._game_repository = game_repository
 
-    async def execute(self, input_dto: PlaceDiscInputDTO) -> None:
+    async def execute(self, input_dto: PlaceDiscInput) -> None:
         game = await self._game_repository.find_by_id(UUID(input_dto.game_id))
 
         if game is None:

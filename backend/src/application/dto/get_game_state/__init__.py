@@ -1,2 +1,2 @@
-from .get_game_state_input_dto import GetGameStateInputDTO
-from .get_game_state_output_dto import GetGameStateOutputDTO
+from .get_game_state_input import GetGameStateInput
+from .get_game_state_output import GetGameStateOutput

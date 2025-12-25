@@ -6,19 +6,11 @@ from ...config import POSTGRES_URL
 
 
 class DatabasePool:
-    """データベース接続プール管理クラス"""
-
     _pool: AsyncConnectionPool | None = None
 
     @classmethod
     async def initialize(cls, min_size: int = 2, max_size: int = 10):
-        """
-        接続プールを初期化（アプリ起動時に1度だけ呼ぶ）
-
-        Args:
-            min_size: 最小接続数
-            max_size: 最大接続数
-        """
+        """接続プールを初期化"""
         if cls._pool is None:
             cls._pool = AsyncConnectionPool(
                 POSTGRES_URL,

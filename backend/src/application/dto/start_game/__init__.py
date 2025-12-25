@@ -1,1 +1,1 @@
-from .start_game_output_dto import StartGameOutputDTO
+from .start_game_output import StartGameOutput

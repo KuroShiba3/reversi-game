@@ -1,7 +1,7 @@
 import pytest
 from uuid import uuid4
 
-from src.application.dto.get_game_state import GetGameStateInputDTO
+from src.application.dto.get_game_state import GetGameStateInput
 from src.application.usecase.get_game_state import GetGameState
 from src.domain.model.game import Game
 from src.domain.model.disc import Disc
@@ -30,7 +30,7 @@ async def test_get_game_state_initial(repository, usecase):
     await repository.save(game)
 
     # Act: ゲーム状態を取得
-    input_dto = GetGameStateInputDTO(str(game.id))
+    input_dto = GetGameStateInput(str(game.id))
     output = await usecase.execute(input_dto)
 
     # Assert: 初期状態が正しく返される
@@ -59,7 +59,7 @@ async def test_get_game_state_after_move(repository, usecase):
     await repository.save(game)
 
     # Act: ゲーム状態を取得
-    input_dto = GetGameStateInputDTO(str(game.id))
+    input_dto = GetGameStateInput(str(game.id))
     output = await usecase.execute(input_dto)
 
     # Assert: 石を置いた後の状態が正しく返される
@@ -84,7 +84,7 @@ async def test_get_game_state_finished_game(repository, usecase):
     await repository.save(game)
 
     # Act: ゲーム状態を取得
-    input_dto = GetGameStateInputDTO(str(game.id))
+    input_dto = GetGameStateInput(str(game.id))
     output = await usecase.execute(input_dto)
 
     # Assert: 終了状態が正しく返される
@@ -100,7 +100,7 @@ async def test_get_game_state_game_not_found(repository, usecase):
     non_existent_id = str(uuid4())
 
     # Act & Assert: ValueErrorが発生する
-    input_dto = GetGameStateInputDTO(non_existent_id)
+    input_dto = GetGameStateInput(non_existent_id)
     with pytest.raises(ValueError) as exc_info:
         await usecase.execute(input_dto)
 
@@ -115,7 +115,7 @@ async def test_get_game_state_board_state_format(repository, usecase):
     await repository.save(game)
 
     # Act
-    input_dto = GetGameStateInputDTO(str(game.id))
+    input_dto = GetGameStateInput(str(game.id))
     output = await usecase.execute(input_dto)
 
     # Assert: 各セルの形式を確認
@@ -143,7 +143,7 @@ async def test_get_game_state_multiple_games(repository, usecase):
     await repository.save(game2)
 
     # Act: game1を取得
-    output1 = await usecase.execute(GetGameStateInputDTO(str(game1.id)))
+    output1 = await usecase.execute(GetGameStateInput(str(game1.id)))
 
     # Assert: game1は初期状態
     assert output1.current_player == "BLACK"
@@ -151,7 +151,7 @@ async def test_get_game_state_multiple_games(repository, usecase):
     assert output1.white_score == 2
 
     # Act: game2を取得
-    output2 = await usecase.execute(GetGameStateInputDTO(str(game2.id)))
+    output2 = await usecase.execute(GetGameStateInput(str(game2.id)))
 
     # Assert: game2は石を置いた後
     assert output2.current_player == "WHITE"

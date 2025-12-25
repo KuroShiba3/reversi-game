@@ -14,10 +14,10 @@ from ..application.usecase.get_game_state import GetGameState
 from ..application.usecase.get_valid_moves import GetValidMoves
 from ..application.usecase.place_disc import PlaceDisc
 from ..application.usecase.pass_turn import PassTurn
-from ..application.dto.get_game_state import GetGameStateInputDTO
-from ..application.dto.get_valid_moves import GetValidMovesInputDTO
-from ..application.dto.place_disc import PlaceDiscInputDTO
-from ..application.dto.pass_turn import PassTurnInputDTO
+from ..application.dto.get_game_state import GetGameStateInput
+from ..application.dto.get_valid_moves import GetValidMovesInput
+from ..application.dto.place_disc import PlaceDiscInput
+from ..application.dto.pass_turn import PassTurnInput
 from ..infrastructure.database.connection_pool import DatabasePool
 from ..infrastructure.repository.game_repository_impl import GameRepositoryImpl
 
@@ -63,11 +63,11 @@ async def get_game_state(
     try:
         # ゲーム状態を取得
         state_usecase = GetGameState(game_repository)
-        state_result = await state_usecase.execute(GetGameStateInputDTO(game_id))
+        state_result = await state_usecase.execute(GetGameStateInput(game_id))
 
         # 有効手を取得
         moves_usecase = GetValidMoves(game_repository)
-        moves_result = await moves_usecase.execute(GetValidMovesInputDTO(game_id))
+        moves_result = await moves_usecase.execute(GetValidMovesInput(game_id))
 
         board_state = [
             CellState(row=cell["row"], col=cell["col"], disc=cell["disc"])
@@ -101,7 +101,7 @@ async def get_valid_moves(
     """現在のプレイヤーが置ける有効な手を取得する"""
     try:
         usecase = GetValidMoves(game_repository)
-        result = await usecase.execute(GetValidMovesInputDTO(game_id))
+        result = await usecase.execute(GetValidMovesInput(game_id))
 
         valid_moves = [
             Position(row=move["row"], col=move["col"]) for move in result.valid_moves
@@ -124,11 +124,11 @@ async def place_disc(
     try:
         # game_idからゲームを取得して現在のプレイヤーを判定
         state_usecase = GetGameState(game_repository)
-        state_result = await state_usecase.execute(GetGameStateInputDTO(game_id))
+        state_result = await state_usecase.execute(GetGameStateInput(game_id))
 
         usecase = PlaceDisc(game_repository)
         await usecase.execute(
-            PlaceDiscInputDTO(
+            PlaceDiscInput(
                 game_id=game_id,
                 disc=state_result.current_player,
                 position={"row": request.row, "col": request.col},
@@ -149,7 +149,7 @@ async def pass_turn(
     """現在のプレイヤーのターンをパスする"""
     try:
         usecase = PassTurn(game_repository)
-        await usecase.execute(PassTurnInputDTO(game_id))
+        await usecase.execute(PassTurnInput(game_id))
         return None
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))

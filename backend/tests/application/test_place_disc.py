@@ -1,7 +1,7 @@
 import pytest
 from uuid import uuid4
 
-from src.application.dto.place_disc import PlaceDiscInputDTO
+from src.application.dto.place_disc import PlaceDiscInput
 from src.application.usecase.place_disc import PlaceDisc
 from src.domain.model.game import Game
 from src.domain.model.disc import Disc
@@ -34,7 +34,7 @@ async def test_place_disc_success(repository, usecase):
     assert game.current_player == Disc.BLACK
 
     # Act: 黒がディスクを配置
-    input_dto = PlaceDiscInputDTO(
+    input_dto = PlaceDiscInput(
         game_id=str(game.id),
         disc="BLACK",
         position={"row": 2, "col": 3}
@@ -54,7 +54,7 @@ async def test_place_disc_game_not_found(repository, usecase):
     non_existent_id = str(uuid4())
 
     # Act & Assert: ValueErrorが発生する
-    input_dto = PlaceDiscInputDTO(
+    input_dto = PlaceDiscInput(
         game_id=non_existent_id,
         disc="BLACK",
         position={"row": 2, "col": 3}
@@ -73,7 +73,7 @@ async def test_place_disc_finished_game(repository, usecase):
     await repository.save(game)
 
     # Act & Assert: ValueErrorが発生する
-    input_dto = PlaceDiscInputDTO(
+    input_dto = PlaceDiscInput(
         game_id=str(game.id),
         disc="BLACK",
         position={"row": 2, "col": 3}
@@ -91,7 +91,7 @@ async def test_place_disc_invalid_position(repository, usecase):
     await repository.save(game)
 
     # Act & Assert: 無効な位置(0, 0)に置こうとするとエラー
-    input_dto = PlaceDiscInputDTO(
+    input_dto = PlaceDiscInput(
         game_id=str(game.id),
         disc="BLACK",
         position={"row": 0, "col": 0}
@@ -107,7 +107,7 @@ async def test_place_disc_wrong_player(repository, usecase):
     await repository.save(game)
 
     # Act & Assert: 白のディスクを置こうとするとエラー
-    input_dto = PlaceDiscInputDTO(
+    input_dto = PlaceDiscInput(
         game_id=str(game.id),
         disc="WHITE",
         position={"row": 2, "col": 3}
@@ -123,7 +123,7 @@ async def test_place_disc_alternates_players(repository, usecase):
     await repository.save(game)
 
     # Act: 黒がディスクを配置
-    await usecase.execute(PlaceDiscInputDTO(
+    await usecase.execute(PlaceDiscInput(
         game_id=str(game.id),
         disc="BLACK",
         position={"row": 2, "col": 3}
@@ -134,7 +134,7 @@ async def test_place_disc_alternates_players(repository, usecase):
     assert game.current_player == Disc.WHITE
 
     # Act: 白がディスクを配置
-    await usecase.execute(PlaceDiscInputDTO(
+    await usecase.execute(PlaceDiscInput(
         game_id=str(game.id),
         disc="WHITE",
         position={"row": 2, "col": 2}
@@ -155,7 +155,7 @@ async def test_place_disc_flips_opponent_discs(repository, usecase):
     assert game.board.cells[Position(3, 3)] == Disc.WHITE
 
     # Act: 黒が(2,3)に配置
-    await usecase.execute(PlaceDiscInputDTO(
+    await usecase.execute(PlaceDiscInput(
         game_id=str(game.id),
         disc="BLACK",
         position={"row": 2, "col": 3}
@@ -178,7 +178,7 @@ async def test_place_disc_updates_scores(repository, usecase):
     assert white_score == 2
 
     # Act: 黒が(2,3)に配置
-    await usecase.execute(PlaceDiscInputDTO(
+    await usecase.execute(PlaceDiscInput(
         game_id=str(game.id),
         disc="BLACK",
         position={"row": 2, "col": 3}
@@ -211,7 +211,7 @@ async def test_place_disc_triggers_game_over(repository, usecase):
     await repository.save(game)
 
     # Act: 黒が最後のマスに配置
-    await usecase.execute(PlaceDiscInputDTO(
+    await usecase.execute(PlaceDiscInput(
         game_id=str(game.id),
         disc="BLACK",
         position={"row": 7, "col": 7}
@@ -241,7 +241,7 @@ async def test_place_disc_creates_game_result_when_finished(repository, usecase)
     await repository.save(game)
 
     # Act: 最後の手を打つ
-    await usecase.execute(PlaceDiscInputDTO(
+    await usecase.execute(PlaceDiscInput(
         game_id=str(game.id),
         disc="BLACK",
         position={"row": 7, "col": 7}
@@ -264,7 +264,7 @@ async def test_place_disc_no_return_value(repository, usecase):
     await repository.save(game)
 
     # Act
-    input_dto = PlaceDiscInputDTO(
+    input_dto = PlaceDiscInput(
         game_id=str(game.id),
         disc="BLACK",
         position={"row": 2, "col": 3}
@@ -283,7 +283,7 @@ async def test_place_disc_saves_game_state(repository, usecase):
     await repository.save(game)
 
     # Act: ディスクを配置
-    await usecase.execute(PlaceDiscInputDTO(
+    await usecase.execute(PlaceDiscInput(
         game_id=str(game_id),
         disc="BLACK",
         position={"row": 2, "col": 3}

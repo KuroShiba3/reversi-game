@@ -1,14 +1,14 @@
 from uuid import UUID
 
 from ...domain.repository.game_repository import GameRepository
-from ..dto.get_game_state import GetGameStateInputDTO, GetGameStateOutputDTO
+from ..dto.get_game_state import GetGameStateInput, GetGameStateOutput
 
 
 class GetGameState:
     def __init__(self, game_repository: GameRepository):
         self._game_repository = game_repository
 
-    async def execute(self, input_dto: GetGameStateInputDTO) -> GetGameStateOutputDTO:
+    async def execute(self, input_dto: GetGameStateInput) -> GetGameStateOutput:
         game = await self._game_repository.find_by_id(UUID(input_dto.game_id))
 
         if game is None:
@@ -21,7 +21,7 @@ class GetGameState:
 
         black_score, white_score = game.get_scores()
 
-        return GetGameStateOutputDTO(
+        return GetGameStateOutput(
             board_state,
             game.current_player.name,
             black_score,

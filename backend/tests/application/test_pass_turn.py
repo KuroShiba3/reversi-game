@@ -1,7 +1,7 @@
 import pytest
 from uuid import uuid4
 
-from src.application.dto.pass_turn import PassTurnInputDTO
+from src.application.dto.pass_turn import PassTurnInput
 from src.application.usecase.pass_turn import PassTurn
 from src.domain.model.game import Game
 from src.domain.model.disc import Disc
@@ -35,7 +35,7 @@ async def test_pass_turn_cannot_pass_with_valid_moves(repository, usecase):
     assert len(game.get_valid_moves()) == 4
 
     # Act & Assert: パスしようとするとエラー
-    input_dto = PassTurnInputDTO(str(game.id))
+    input_dto = PassTurnInput(str(game.id))
     with pytest.raises(ValueError) as exc_info:
         await usecase.execute(input_dto)
 
@@ -48,7 +48,7 @@ async def test_pass_turn_game_not_found(repository, usecase):
     non_existent_id = str(uuid4())
 
     # Act & Assert: ValueErrorが発生する
-    input_dto = PassTurnInputDTO(non_existent_id)
+    input_dto = PassTurnInput(non_existent_id)
     with pytest.raises(ValueError) as exc_info:
         await usecase.execute(input_dto)
 
@@ -63,7 +63,7 @@ async def test_pass_turn_finished_game(repository, usecase):
     await repository.save(game)
 
     # Act & Assert: パスしようとするとエラー
-    input_dto = PassTurnInputDTO(str(game.id))
+    input_dto = PassTurnInput(str(game.id))
     with pytest.raises(ValueError) as exc_info:
         await usecase.execute(input_dto)
 
@@ -87,7 +87,7 @@ async def test_pass_turn_alternates_players(repository, usecase):
     assert len(game.get_valid_moves()) == 0
 
     # Act: 黒がパス
-    input_dto = PassTurnInputDTO(str(game.id))
+    input_dto = PassTurnInput(str(game.id))
     await usecase.execute(input_dto)
 
     # Assert: 白のターンに切り替わり、ゲームが終了している
@@ -112,7 +112,7 @@ async def test_pass_turn_creates_game_result_when_finished(repository, usecase):
     await repository.save(game)
 
     # Act: パスする
-    input_dto = PassTurnInputDTO(str(game.id))
+    input_dto = PassTurnInput(str(game.id))
     await usecase.execute(input_dto)
 
     # Assert: GameResultが作成されている

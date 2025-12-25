@@ -1,7 +1,7 @@
 import pytest
 from uuid import uuid4
 
-from src.application.dto.get_valid_moves import GetValidMovesInputDTO
+from src.application.dto.get_valid_moves import GetValidMovesInput
 from src.application.usecase.get_valid_moves import GetValidMoves
 from src.domain.model.game import Game
 from src.domain.model.disc import Disc
@@ -30,7 +30,7 @@ async def test_get_valid_moves_initial(repository, usecase):
     await repository.save(game)
 
     # Act: 有効手を取得
-    input_dto = GetValidMovesInputDTO(str(game.id))
+    input_dto = GetValidMovesInput(str(game.id))
     output = await usecase.execute(input_dto)
 
     # Assert: 初期状態では黒の有効手が4つ
@@ -52,7 +52,7 @@ async def test_get_valid_moves_after_move(repository, usecase):
     await repository.save(game)
 
     # Act: 有効手を取得（白のターン）
-    input_dto = GetValidMovesInputDTO(str(game.id))
+    input_dto = GetValidMovesInput(str(game.id))
     output = await usecase.execute(input_dto)
 
     # Assert: 白の有効手が返される
@@ -75,7 +75,7 @@ async def test_get_valid_moves_no_valid_moves(repository, usecase):
     await repository.save(game)
 
     # Act: 有効手を取得
-    input_dto = GetValidMovesInputDTO(str(game.id))
+    input_dto = GetValidMovesInput(str(game.id))
     output = await usecase.execute(input_dto)
 
     # Assert: 有効手が空リスト
@@ -91,7 +91,7 @@ async def test_get_valid_moves_finished_game(repository, usecase):
     await repository.save(game)
 
     # Act: 有効手を取得
-    input_dto = GetValidMovesInputDTO(str(game.id))
+    input_dto = GetValidMovesInput(str(game.id))
     output = await usecase.execute(input_dto)
 
     # Assert: 終了したゲームでは有効手が空リスト
@@ -105,7 +105,7 @@ async def test_get_valid_moves_game_not_found(repository, usecase):
     non_existent_id = str(uuid4())
 
     # Act & Assert: ValueErrorが発生する
-    input_dto = GetValidMovesInputDTO(non_existent_id)
+    input_dto = GetValidMovesInput(non_existent_id)
     with pytest.raises(ValueError) as exc_info:
         await usecase.execute(input_dto)
 
@@ -119,7 +119,7 @@ async def test_get_valid_moves_output_format(repository, usecase):
     await repository.save(game)
 
     # Act
-    input_dto = GetValidMovesInputDTO(str(game.id))
+    input_dto = GetValidMovesInput(str(game.id))
     output = await usecase.execute(input_dto)
 
     # Assert: 各有効手の形式を確認
@@ -139,7 +139,7 @@ async def test_get_valid_moves_changes_with_game_state(repository, usecase):
     await repository.save(game)
 
     # Act: 初期状態の有効手
-    input_dto = GetValidMovesInputDTO(str(game.id))
+    input_dto = GetValidMovesInput(str(game.id))
     output1 = await usecase.execute(input_dto)
     initial_moves = set((m["row"], m["col"]) for m in output1.valid_moves)
 
@@ -166,10 +166,10 @@ async def test_get_valid_moves_multiple_games(repository, usecase):
     await repository.save(game2)
 
     # Act: game1の有効手（黒のターン）
-    output1 = await usecase.execute(GetValidMovesInputDTO(str(game1.id)))
+    output1 = await usecase.execute(GetValidMovesInput(str(game1.id)))
 
     # Act: game2の有効手（白のターン）
-    output2 = await usecase.execute(GetValidMovesInputDTO(str(game2.id)))
+    output2 = await usecase.execute(GetValidMovesInput(str(game2.id)))
 
     # Assert: それぞれ異なるプレイヤーの有効手が返される
     moves1 = set((m["row"], m["col"]) for m in output1.valid_moves)

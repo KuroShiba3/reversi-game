@@ -130,8 +130,8 @@ async def test_start_game_returns_output_dto(repository, usecase):
     result = await usecase.execute()
 
     # Assert: OutputDTOの型を確認
-    from src.application.dto.start_game import StartGameOutputDTO
-    assert isinstance(result, StartGameOutputDTO)
+    from src.application.dto.start_game import StartGameOutput
+    assert isinstance(result, StartGameOutput)
 
     # 必須フィールドが存在する
     assert hasattr(result, "game_id")

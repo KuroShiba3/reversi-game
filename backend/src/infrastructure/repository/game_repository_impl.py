@@ -5,8 +5,6 @@ from src.domain.model import Game, Board, Disc, Position, GameStatus
 
 
 class GameRepositoryImpl:
-    """ゲームリポジトリのPostgreSQL実装"""
-
     def __init__(self, pool: AsyncConnectionPool):
         self._pool = pool
 
@@ -17,7 +15,7 @@ class GameRepositoryImpl:
         """
         async with self._pool.connection() as conn:
             async with conn.cursor() as cur:
-                # 1. gamesテーブルに保存（UPSERT）
+                # gamesテーブルに保存
                 await cur.execute(
                     """
                     INSERT INTO games (id, current_player, status, created_at, updated_at)
@@ -30,7 +28,7 @@ class GameRepositoryImpl:
                     (str(game.id), game.current_player.value, game.status.value),
                 )
 
-                # 2. board_cellsを一括UPSERT
+                # board_cellsを一括UPSERT
                 cell_data = [
                     (str(game.id), pos.row, pos.col, disc.value)
                     for pos, disc in game.board.cells.items()
@@ -47,7 +45,7 @@ class GameRepositoryImpl:
                     cell_data,
                 )
 
-                # 3. ゲーム結果を保存（game.resultが存在する場合のみ）
+                # ゲーム結果を保存（game.resultが存在する場合のみ）
                 if game.result is not None:
                     await cur.execute(
                         """

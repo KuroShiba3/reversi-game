@@ -1,2 +1,2 @@
-from .get_valid_moves_input_dto import GetValidMovesInputDTO
-from .get_valid_moves_output_dto import GetValidMovesOutputDTO
+from .get_valid_moves_input import GetValidMovesInput
+from .get_valid_moves_output import GetValidMovesOutput

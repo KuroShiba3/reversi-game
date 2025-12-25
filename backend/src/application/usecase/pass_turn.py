@@ -2,14 +2,14 @@ from uuid import UUID
 
 from ...domain.repository.game_repository import GameRepository
 from ...domain.model.game_status import GameStatus
-from ..dto.pass_turn import PassTurnInputDTO
+from ..dto.pass_turn import PassTurnInput
 
 
 class PassTurn:
     def __init__(self, game_repository: GameRepository):
         self._game_repository = game_repository
 
-    async def execute(self, input_dto: PassTurnInputDTO) -> None:
+    async def execute(self, input_dto: PassTurnInput) -> None:
         game = await self._game_repository.find_by_id(UUID(input_dto.game_id))
 
         if game is None:

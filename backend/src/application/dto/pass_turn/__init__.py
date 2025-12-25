@@ -1,1 +1,1 @@
-from .pass_turn_input_dto import PassTurnInputDTO
+from .pass_turn_input import PassTurnInput
