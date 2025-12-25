@@ -1,10 +1,8 @@
 from uuid import UUID
 
 from ..dto.place_disc import PlaceDiscInput
-from ...domain.model.position import Position
-from ...domain.model.disc import Disc
-from ...domain.model.game_status import GameStatus
-from ...domain.repository.game_repository import GameRepository
+from ...domain.model import Position, Disc, GameStatus
+from ...domain.repository import GameRepository
 
 
 class PlaceDisc:
