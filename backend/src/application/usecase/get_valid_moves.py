@@ -1,7 +1,7 @@
 from uuid import UUID
 
 from ..dto.get_valid_moves import GetValidMovesInput, GetValidMovesOutput
-from ...domain.repository.game_repository import GameRepository
+from ...domain.repository import GameRepository
 
 
 class GetValidMoves:
