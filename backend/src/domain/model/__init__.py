@@ -4,3 +4,12 @@ from .game import Game
 from .game_result import GameResult
 from .game_status import GameStatus
 from .position import Position
+
+__all__ = [
+    "Board",
+    "Disc",
+    "Game",
+    "GameResult",
+    "GameStatus",
+    "Position",
+]
