@@ -2,10 +2,8 @@ import pytest
 from uuid import uuid4
 
 from src.application.dto.get_game_state import GetGameStateInput
-from src.application.usecase.get_game_state import GetGameState
-from src.domain.model.game import Game
-from src.domain.model.disc import Disc
-from src.domain.model.position import Position
+from src.application.usecase import GetGameState
+from src.domain.model import Game, Disc, Position
 
 from tests.application.in_memory_game_repository import InMemoryGameRepository
 
