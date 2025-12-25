@@ -1,5 +1,5 @@
-from ...domain.repository.game_repository import GameRepository
-from ...domain.model.game import Game
+from ...domain.repository import GameRepository
+from ...domain.model import Game
 from ..dto.start_game import StartGameOutput
 
 class StartGame:
