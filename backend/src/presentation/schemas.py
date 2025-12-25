@@ -19,16 +19,12 @@ class StartGameResponse(BaseModel):
     status: str
 
 
-class GetGameStateResponse(BaseModel):
+class GameStateResponse(BaseModel):
     board_state: list[CellState]
     current_player: str
     black_score: int
     white_score: int
     status: str
-    valid_moves: list[Position]
-
-
-class GetValidMovesResponse(BaseModel):
     valid_moves: list[Position]
 
 
