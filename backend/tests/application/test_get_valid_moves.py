@@ -3,6 +3,7 @@ from uuid import uuid4
 
 from src.application.dto.get_valid_moves import GetValidMovesInput
 from src.application.usecase import GetValidMoves
+from src.application.exception import GameNotFoundException
 from src.domain.model import Game, Disc, Position, GameStatus
 
 from tests.repository import InMemoryGameRepository
@@ -87,7 +88,7 @@ async def test_get_valid_moves_game_not_found(usecase):
     non_existent_id = str(uuid4())
 
     input_dto = GetValidMovesInput(non_existent_id)
-    with pytest.raises(ValueError) as exc_info:
+    with pytest.raises(GameNotFoundException) as exc_info:
         await usecase.execute(input_dto)
 
     assert f"ゲームが見つかりません: {non_existent_id}" in str(exc_info.value)
