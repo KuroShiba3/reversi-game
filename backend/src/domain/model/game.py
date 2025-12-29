@@ -43,21 +43,18 @@ class Game:
     def result(self) -> GameResult | None:
         return self._result
 
-    def place_disc(self, position: Position, disc: Disc) -> None:
-        self.board.place_disc(position, disc)
+    def place_disc(self, position: Position) -> None:
+        """現在のプレイヤーの石を指定位置に配置する"""
+        self.board.place_disc(position, self._current_player)
         # ターンを次のプレイヤーに切り替え
-        self._current_player = Disc.WHITE if disc == Disc.BLACK else Disc.BLACK
+        self._current_player = Disc.WHITE if self._current_player == Disc.BLACK else Disc.BLACK
 
-    def get_valid_moves(self, disc: Disc | None = None) -> list[Position]:
-        """
-        指定されたプレイヤーの有効な手を取得
-        discが指定されない場合は現在のプレイヤーの有効な手を返す
-        """
+    def get_valid_moves(self) -> list[Position]:
+        """現在のプレイヤーの有効な手を取得"""
         if self._status == GameStatus.FINISHED:
             return []
 
-        player = disc if disc is not None else self.current_player
-        return self.board.get_valid_moves(player)
+        return self.board.get_valid_moves(self._current_player)
 
     def pass_turn(self) -> None:
         # ターンを次のプレイヤーに切り替え
@@ -77,8 +74,9 @@ class Game:
         if self._status == GameStatus.FINISHED:
             return True
 
-        black_moves = self.get_valid_moves(Disc.BLACK)
-        white_moves = self.get_valid_moves(Disc.WHITE)
+        # 両プレイヤーの有効手を直接チェック
+        black_moves = self.board.get_valid_moves(Disc.BLACK)
+        white_moves = self.board.get_valid_moves(Disc.WHITE)
 
         return len(black_moves) == 0 and len(white_moves) == 0
 

@@ -1,7 +1,7 @@
 from uuid import UUID
 
 from ..dto.place_disc import PlaceDiscInput
-from ...domain.model import Position, Disc, GameStatus
+from ...domain.model import Position, GameStatus
 from ...domain.repository import GameRepository
 
 
@@ -18,10 +18,9 @@ class PlaceDisc:
         if game.status == GameStatus.FINISHED:
             raise ValueError("ゲームはすでに終了しています。")
 
-        disc = Disc[input_dto.disc]
         position = Position(input_dto.position["row"], input_dto.position["col"])
 
-        game.place_disc(position, disc)
+        game.place_disc(position)
 
         # ゲーム終了判定（finish()でGame内にresultを保持）
         if game.is_game_over():

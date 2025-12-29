@@ -42,17 +42,12 @@ class GameController:
         )
 
     async def place_disc(self, game_id: str, row: int, col: int) -> GameStateResponse:
-        """指定した位置に石を置く"""
-        # game_idからゲームを取得して現在のプレイヤーを判定
-        state_usecase = GetGameState(self._game_repository)
-        state_result = await state_usecase.execute(GetGameStateInput(game_id))
-
+        """指定した位置に石を置く（現在のプレイヤーの石を配置）"""
         # 石を置く
         usecase = PlaceDisc(self._game_repository)
         await usecase.execute(
             PlaceDiscInput(
                 game_id=game_id,
-                disc=state_result.current_player,
                 position={"row": row, "col": col},
             )
         )
