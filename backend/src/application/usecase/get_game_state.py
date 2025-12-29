@@ -1,7 +1,8 @@
 from uuid import UUID
 
 from ...domain.repository import GameRepository
-from ..dto.get_game_state import GetGameStateInput, GetGameStateOutput
+from ..dto import GetGameStateInput, GetGameStateOutput
+from ..exception import GameNotFoundException
 
 
 class GetGameState:
@@ -12,7 +13,7 @@ class GetGameState:
         game = await self._game_repository.find_by_id(UUID(input_dto.game_id))
 
         if game is None:
-            raise ValueError(f"ゲームが見つかりません: {input_dto.game_id}")
+            raise GameNotFoundException(input_dto.game_id)
 
         board_state = [
             {"row": pos.row, "col": pos.col, "disc": disc.name}
@@ -26,5 +27,5 @@ class GetGameState:
             game.current_player.name,
             black_score,
             white_score,
-            game.status.value
+            game.status.value,
         )

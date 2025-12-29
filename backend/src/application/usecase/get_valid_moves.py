@@ -1,7 +1,8 @@
 from uuid import UUID
 
-from ..dto.get_valid_moves import GetValidMovesInput, GetValidMovesOutput
 from ...domain.repository import GameRepository
+from ..dto import GetValidMovesInput, GetValidMovesOutput
+from ..exception import GameNotFoundException
 
 
 class GetValidMoves:
@@ -12,11 +13,10 @@ class GetValidMoves:
         game = await self._game_repository.find_by_id(UUID(input_dto.game_id))
 
         if game is None:
-            raise ValueError(f"ゲームが見つかりません: {input_dto.game_id}")
+            raise GameNotFoundException(input_dto.game_id)
 
         valid_moves = [
-            {"row": pos.row, "col": pos.col}
-            for pos in game.get_valid_moves()
+            {"row": pos.row, "col": pos.col} for pos in game.get_valid_moves()
         ]
 
         return GetValidMovesOutput(valid_moves)
