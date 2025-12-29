@@ -1,5 +1,6 @@
 from .disc import Disc
 from .position import Position
+from ..exception import InvalidMoveException, CannotPlaceEmptyDiscException
 
 class Board:
     def __init__(self, cells: dict[Position, Disc]):
@@ -31,9 +32,14 @@ class Board:
     def place_disc(self, position: Position, disc: Disc) -> None:
         """指定された位置に石を置き、裏返す"""
         if disc == Disc.EMPTY:
-            raise ValueError("EMPTYの石は配置できません")
+            raise CannotPlaceEmptyDiscException()
         if not self._can_place(position, disc):
-            raise ValueError("指定された位置に石を置くことはできません")
+            raise InvalidMoveException(
+                position.row,
+                position.col,
+                disc.name,
+                "指定された位置に石を置くことはできません"
+            )
 
         self._cells[position] = disc
 
@@ -49,7 +55,7 @@ class Board:
     def get_valid_moves(self, disc: Disc) -> list[Position]:
         """指定されたプレイヤーが置ける位置を返す"""
         if disc == Disc.EMPTY:
-            raise ValueError("EMPTYに対する有効な手は取得できません")
+            raise CannotPlaceEmptyDiscException()
         valid_positions = []
 
         for row in range(8):
