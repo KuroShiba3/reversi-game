@@ -36,10 +36,6 @@ env/
 *.sqlite3
 pgdata/
 
-# Alembic versions (keep versions folder but ignore generated migrations if needed)
-# migrations/versions/*.py
-# !migrations/versions/.gitkeep
-
 # Node.js
 node_modules/
 npm-debug.log*
