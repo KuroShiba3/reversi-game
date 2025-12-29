@@ -36,14 +36,15 @@ async def test_get_valid_moves_initial(repository, usecase):
 
 
 async def test_get_valid_moves_after_move(repository, usecase):
-    """石を置いた後の有効手取得テスト"""
+    """石を置いた後の有効手取得テスト（白のターン）"""
     game = Game.create()
-    game.place_disc(Position(2, 3), Disc.BLACK)
+    game.place_disc(Position(2, 3))  # 黒が打つ -> 白のターンになる
     await repository.save(game)
 
     input_dto = GetValidMovesInput(str(game.id))
     output = await usecase.execute(input_dto)
 
+    # 白の有効手が取得できる
     assert len(output.valid_moves) > 0
     assert output.valid_moves[0]["row"] >= 0
     assert output.valid_moves[0]["col"] >= 0

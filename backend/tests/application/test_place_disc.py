@@ -27,7 +27,6 @@ async def test_place_disc_success(repository, usecase):
 
     input_dto = PlaceDiscInput(
         game_id=str(game.id),
-        disc="BLACK",
         position={"row": 2, "col": 3}
     )
     await usecase.execute(input_dto)
@@ -44,7 +43,6 @@ async def test_place_disc_game_not_found(repository, usecase):
 
     input_dto = PlaceDiscInput(
         game_id=non_existent_id,
-        disc="BLACK",
         position={"row": 2, "col": 3}
     )
     with pytest.raises(ValueError) as exc_info:
@@ -61,7 +59,6 @@ async def test_place_disc_finished_game(repository, usecase):
 
     input_dto = PlaceDiscInput(
         game_id=str(game.id),
-        disc="BLACK",
         position={"row": 2, "col": 3}
     )
     with pytest.raises(ValueError) as exc_info:
@@ -77,25 +74,12 @@ async def test_place_disc_invalid_position(repository, usecase):
 
     input_dto = PlaceDiscInput(
         game_id=str(game.id),
-        disc="BLACK",
         position={"row": 0, "col": 0}
     )
     with pytest.raises(ValueError):
         await usecase.execute(input_dto)
 
 
-async def test_place_disc_wrong_player(repository, usecase):
-    """現在のプレイヤーでない色のディスクは配置できない"""
-    game = Game.create()
-    await repository.save(game)
-
-    input_dto = PlaceDiscInput(
-        game_id=str(game.id),
-        disc="WHITE",
-        position={"row": 2, "col": 3}
-    )
-    with pytest.raises(ValueError):
-        await usecase.execute(input_dto)
 
 
 async def test_place_disc_alternates_players(repository, usecase):
@@ -105,7 +89,6 @@ async def test_place_disc_alternates_players(repository, usecase):
 
     await usecase.execute(PlaceDiscInput(
         game_id=str(game.id),
-        disc="BLACK",
         position={"row": 2, "col": 3}
     ))
 
@@ -114,7 +97,6 @@ async def test_place_disc_alternates_players(repository, usecase):
 
     await usecase.execute(PlaceDiscInput(
         game_id=str(game.id),
-        disc="WHITE",
         position={"row": 2, "col": 2}
     ))
 
@@ -132,7 +114,6 @@ async def test_place_disc_updates_scores(repository, usecase):
 
     await usecase.execute(PlaceDiscInput(
         game_id=str(game.id),
-        disc="BLACK",
         position={"row": 2, "col": 3}
     ))
 
@@ -159,7 +140,6 @@ async def test_place_disc_creates_game_result_when_finished(repository, usecase)
 
     await usecase.execute(PlaceDiscInput(
         game_id=str(game.id),
-        disc="BLACK",
         position={"row": 7, "col": 7}
     ))
 

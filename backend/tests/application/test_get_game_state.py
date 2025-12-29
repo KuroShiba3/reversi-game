@@ -45,7 +45,7 @@ async def test_get_game_state_initial(repository, usecase):
 async def test_get_game_state_after_move(repository, usecase):
     """石を置いた後のゲーム状態取得テスト"""
     game = Game.create()
-    game.place_disc(Position(2, 3), Disc.BLACK)
+    game.place_disc(Position(2, 3))
     await repository.save(game)
 
     input_dto = GetGameStateInput(str(game.id))
@@ -65,7 +65,7 @@ async def test_get_game_state_after_move(repository, usecase):
 async def test_get_game_state_finished_game(repository, usecase):
     """終了したゲームの状態取得テスト"""
     game = Game.create()
-    game.place_disc(Position(2, 3), Disc.BLACK)
+    game.place_disc(Position(2, 3))
     game.finish()
     await repository.save(game)
 

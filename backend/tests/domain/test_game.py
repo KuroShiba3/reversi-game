@@ -48,8 +48,8 @@ def test_game_place_disc():
     # 黒のターン
     assert game.current_player == Disc.BLACK
 
-    # 黒が石を置く
-    game.place_disc(Position(2, 3), Disc.BLACK)
+    # 黒が石を置く（current_playerを使用）
+    game.place_disc(Position(2, 3))
 
     # ターンが白に切り替わる
     assert game.current_player == Disc.WHITE
@@ -64,13 +64,13 @@ def test_game_place_disc_white():
     game = Game.create()
 
     # 黒のターンをスキップして白のターンにする
-    game.place_disc(Position(2, 3), Disc.BLACK)
+    game.place_disc(Position(2, 3))
 
     # 白のターン
     assert game.current_player == Disc.WHITE
 
     # 白が石を置く
-    game.place_disc(Position(2, 2), Disc.WHITE)
+    game.place_disc(Position(2, 2))
 
     # ターンが黒に戻る
     assert game.current_player == Disc.BLACK
@@ -87,10 +87,6 @@ def test_game_get_valid_moves_initial():
     assert Position(3, 2) in valid_moves
     assert Position(4, 5) in valid_moves
     assert Position(5, 4) in valid_moves
-
-    # 白の有効手を明示的に取得
-    white_moves = game.get_valid_moves(Disc.WHITE)
-    assert len(white_moves) == 4
 
 
 def test_game_get_valid_moves_finished():
@@ -144,7 +140,7 @@ def test_game_get_scores_after_move():
     game = Game.create()
 
     # 黒が石を置く
-    game.place_disc(Position(2, 3), Disc.BLACK)
+    game.place_disc(Position(2, 3))
 
     black_score, white_score = game.get_scores()
     assert black_score == 4  # 2 + 置いた石1 + 裏返した石1
@@ -211,7 +207,7 @@ def test_game_finish_black_wins(mocker):
     game = Game.create()
 
     # 黒が優勢な盤面を作る
-    game.place_disc(Position(2, 3), Disc.BLACK)
+    game.place_disc(Position(2, 3))
 
     from datetime import datetime
     fixed_time = datetime(2025, 12, 22, 16, 0, 0)
@@ -246,7 +242,7 @@ def test_game_full_gameplay():
     assert len(valid_moves) > 0
 
     # 黒が手を打つ
-    game.place_disc(valid_moves[0], Disc.BLACK)
+    game.place_disc(valid_moves[0])
 
     # 白のターン
     assert game.current_player == Disc.WHITE
@@ -254,7 +250,7 @@ def test_game_full_gameplay():
     assert len(white_moves) > 0
 
     # 白が手を打つ
-    game.place_disc(white_moves[0], Disc.WHITE)
+    game.place_disc(white_moves[0])
 
     # 黒のターンに戻る
     assert game.current_player == Disc.BLACK
