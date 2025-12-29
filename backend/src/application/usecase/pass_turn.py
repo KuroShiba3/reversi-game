@@ -1,8 +1,10 @@
 from uuid import UUID
 
+from ...domain.exception import GameAlreadyFinishedException
 from ...domain.model import GameStatus
 from ...domain.repository import GameRepository
-from ..dto.pass_turn import PassTurnInput
+from ..dto import PassTurnInput
+from ..exception import GameNotFoundException
 
 
 class PassTurn:
@@ -13,18 +15,13 @@ class PassTurn:
         game = await self._game_repository.find_by_id(UUID(input_dto.game_id))
 
         if game is None:
-            raise ValueError(f"ゲームが見つかりません: {input_dto.game_id}")
+            raise GameNotFoundException(input_dto.game_id)
 
         if game.status == GameStatus.FINISHED:
-            raise ValueError("ゲームはすでに終了しています。")
-
-        # 現在のプレイヤーが本当にパスする必要があるかチェック
-        if game.can_current_player_move():
-            raise ValueError("現在のプレイヤーは有効な手があるため、パスできません。")
+            raise GameAlreadyFinishedException(UUID(input_dto.game_id))
 
         game.pass_turn()
 
-        # パス後にゲーム終了判定
         if game.is_game_over():
             game.finish()
 
