@@ -1,11 +1,9 @@
 # Reversi Game
 
-オセロゲームのWebアプリケーション
-
 ## ドキュメント
 
 - [ER図](docs/er-diagram.drawio) - データベース設計
-- [ドメインモデル図](docs/domain-model.drawio) - ドメイン駆動設計のモデル図
+- [ドメインモデル図](docs/domain-model.drawio) - モデル図
 
 ## 技術スタック
 
@@ -16,7 +14,7 @@
 - **DB接続**: psycopg3 (非同期)
 - **マイグレーション**: yoyo-migrations
 - **テスト**: pytest, pytest-asyncio
-- **アーキテクチャ**: DDD（ドメイン駆動設計）+ クリーンアーキテクチャ
+- **アーキテクチャ**: オニオンアーキテクチャ
 
 ## 機能
 
