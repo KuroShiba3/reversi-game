@@ -1,9 +1,9 @@
-import pytest
 from uuid import uuid4
 
+import pytest
 from src.application.dto.get_game_state import GetGameStateInput
 from src.application.usecase import GetGameState
-from src.domain.model import Game, Disc, Position
+from src.domain.model import Game, Position
 
 from tests.repository import InMemoryGameRepository
 
@@ -34,7 +34,9 @@ async def test_get_game_state_initial(repository, usecase):
 
     assert len(output.board_state) == 64
 
-    board_dict = {(cell["row"], cell["col"]): cell["disc"] for cell in output.board_state}
+    board_dict = {
+        (cell["row"], cell["col"]): cell["disc"] for cell in output.board_state
+    }
     assert board_dict[(3, 3)] == "WHITE"
     assert board_dict[(3, 4)] == "BLACK"
     assert board_dict[(4, 3)] == "BLACK"
@@ -56,7 +58,9 @@ async def test_get_game_state_after_move(repository, usecase):
     assert output.white_score == 1
     assert output.status == "playing"
 
-    board_dict = {(cell["row"], cell["col"]): cell["disc"] for cell in output.board_state}
+    board_dict = {
+        (cell["row"], cell["col"]): cell["disc"] for cell in output.board_state
+    }
     assert board_dict[(2, 3)] == "BLACK"
     assert board_dict[(3, 3)] == "BLACK"
 
