@@ -1,0 +1,126 @@
+<mxfile host="65bd71144e">
+    <diagram id="domain-model" name="Domain Model">
+        <mxGraphModel dx="639" dy="416" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="game-class" value="Game" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;" parent="1" vertex="1">
+                    <mxGeometry x="80" y="120" width="320" height="280" as="geometry"/>
+                </mxCell>
+                <mxCell id="game-attributes" value="- id: UUID&#xa;- board: Board&#xa;- current_player: Disc&#xa;- status: GameStatus&#xa;- result: GameResult | None" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="game-class" vertex="1">
+                    <mxGeometry y="50" width="320" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="game-separator" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="game-class" vertex="1">
+                    <mxGeometry y="140" width="320" height="8" as="geometry"/>
+                </mxCell>
+                <mxCell id="game-methods" value="+ create(): Game&#xa;+ place_disc(position: Position): void&#xa;+ pass_turn(): void&#xa;+ get_valid_moves(): list[Position]&#xa;+ get_scores(): tuple[int, int]&#xa;+ is_game_over(): bool&#xa;+ finish(): void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="game-class" vertex="1">
+                    <mxGeometry y="148" width="320" height="132" as="geometry"/>
+                </mxCell>
+                <mxCell id="board-class" value="Board" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="520" y="120" width="320" height="240" as="geometry"/>
+                </mxCell>
+                <mxCell id="board-attributes" value="- cells: dict[Position, Disc]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="board-class" vertex="1">
+                    <mxGeometry y="50" width="320" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="board-separator" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="board-class" vertex="1">
+                    <mxGeometry y="90" width="320" height="8" as="geometry"/>
+                </mxCell>
+                <mxCell id="board-methods" value="+ create(): Board&#xa;+ place_disc(pos: Position, disc: Disc): Board&#xa;+ get_valid_moves(disc: Disc): list[Position]&#xa;+ count_discs(disc: Disc): int&#xa;+ get_disc_at(pos: Position): Disc&#xa;+ reconstruct(cells: dict): Board" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="board-class" vertex="1">
+                    <mxGeometry y="98" width="320" height="142" as="geometry"/>
+                </mxCell>
+                <mxCell id="position-class" value="Position" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+                    <mxGeometry x="960" y="120" width="280" height="180" as="geometry"/>
+                </mxCell>
+                <mxCell id="position-attributes" value="- row: int (0-7)&#xa;- col: int (0-7)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="position-class" vertex="1">
+                    <mxGeometry y="50" width="280" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="position-separator" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="position-class" vertex="1">
+                    <mxGeometry y="100" width="280" height="8" as="geometry"/>
+                </mxCell>
+                <mxCell id="position-methods" value="+ __eq__(other): bool&#xa;+ __hash__(): int&#xa;+ is_valid(): bool" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="position-class" vertex="1">
+                    <mxGeometry y="108" width="280" height="72" as="geometry"/>
+                </mxCell>
+                <mxCell id="disc-class" value="Disc" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" parent="1" vertex="1">
+                    <mxGeometry x="960" y="360" width="280" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="disc-values" value="EMPTY = 0&#xa;BLACK = 1&#xa;WHITE = 2" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="disc-class" vertex="1">
+                    <mxGeometry y="50" width="280" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="disc-separator" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="disc-class" vertex="1">
+                    <mxGeometry y="110" width="280" height="8" as="geometry"/>
+                </mxCell>
+                <mxCell id="disc-methods" value="+ opposite(): Disc" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="disc-class" vertex="1">
+                    <mxGeometry y="118" width="280" height="42" as="geometry"/>
+                </mxCell>
+                <mxCell id="status-class" value="GameStatus" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" parent="1" vertex="1">
+                    <mxGeometry x="520" y="420" width="280" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="status-values" value="PLAYING = &#39;playing&#39;&#xa;FINISHED = &#39;finished&#39;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="status-class" vertex="1">
+                    <mxGeometry y="50" width="280" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="result-class" value="GameResult" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+                    <mxGeometry x="80" y="480" width="320" height="220" as="geometry"/>
+                </mxCell>
+                <mxCell id="result-attributes" value="- game_id: UUID&#xa;- winner: Disc | None&#xa;- black_score: int&#xa;- white_score: int&#xa;- finished_at: datetime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="result-class" vertex="1">
+                    <mxGeometry y="50" width="320" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="result-separator" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="result-class" vertex="1">
+                    <mxGeometry y="140" width="320" height="8" as="geometry"/>
+                </mxCell>
+                <mxCell id="result-methods" value="+ create(game_id, black, white): GameResult&#xa;+ to_db_winner_value(): int" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="result-class" vertex="1">
+                    <mxGeometry y="148" width="320" height="72" as="geometry"/>
+                </mxCell>
+                <mxCell id="rel-game-board" value="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=diamond;endFill=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;startArrow=none;startFill=0;" parent="1" source="game-attributes" target="board-attributes" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="400" y="190" as="sourcePoint"/>
+                        <mxPoint x="520" y="190" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel-board-position" value="*" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;dashed=1;" parent="1" source="board-attributes" target="position-attributes" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="840" y="190" as="sourcePoint"/>
+                        <mxPoint x="960" y="190" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="840" y="195"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel-board-disc" value="*" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;dashed=1;" parent="1" source="board-class" target="disc-values" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="680" y="360" as="sourcePoint"/>
+                        <mxPoint x="960" y="425" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="680" y="425"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel-game-disc" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;dashed=1;" parent="1" source="game-attributes" target="disc-class" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="400" y="195" as="sourcePoint"/>
+                        <mxPoint x="1100" y="360" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="450" y="195"/>
+                            <mxPoint x="450" y="320"/>
+                            <mxPoint x="1100" y="320"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel-game-status" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;dashed=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="237" y="394" as="sourcePoint"/>
+                        <mxPoint x="513" y="483" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="237" y="483"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel-game-result" value="0..1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=diamond;endFill=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="game-class" target="result-class" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="240" y="400" as="sourcePoint"/>
+                        <mxPoint x="240" y="480" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
