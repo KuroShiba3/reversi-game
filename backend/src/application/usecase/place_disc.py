@@ -1,8 +1,8 @@
 from uuid import UUID
 
-from ..dto.place_disc import PlaceDiscInput
-from ...domain.model import Position, GameStatus
+from ...domain.model import GameStatus, Position
 from ...domain.repository import GameRepository
+from ..dto.place_disc import PlaceDiscInput
 
 
 class PlaceDisc:
@@ -22,9 +22,9 @@ class PlaceDisc:
 
         game.place_disc(position)
 
-        # ゲーム終了判定（finish()でGame内にresultを保持）
+        # ゲーム終了判定
         if game.is_game_over():
             game.finish()
 
-        # ゲームを保存（終了していればresultも1トランザクションで保存）
+        # ゲームを保存
         await self._game_repository.save(game)
