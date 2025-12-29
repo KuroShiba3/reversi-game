@@ -1,7 +1,7 @@
 from uuid import UUID
 
-from ...domain.repository import GameRepository
 from ...domain.model import GameStatus
+from ...domain.repository import GameRepository
 from ..dto.pass_turn import PassTurnInput
 
 
@@ -24,9 +24,9 @@ class PassTurn:
 
         game.pass_turn()
 
-        # パス後にゲーム終了判定（finish()でGame内にresultを保持）
+        # パス後にゲーム終了判定
         if game.is_game_over():
             game.finish()
 
-        # ゲームを保存（終了していればresultも1トランザクションで保存）
+        # ゲームを保存
         await self._game_repository.save(game)
