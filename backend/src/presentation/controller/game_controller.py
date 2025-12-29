@@ -1,21 +1,23 @@
-from ..schemas import (
-    StartGameResponse,
-    GameStateResponse,
-    CellState,
-    Position,
+from ...application.dto import (
+    GetGameStateInput,
+    GetValidMovesInput,
+    PassTurnInput,
+    PlaceDiscInput,
 )
 from ...application.usecase import (
-    StartGame,
     GetGameState,
     GetValidMoves,
-    PlaceDisc,
     PassTurn,
+    PlaceDisc,
+    StartGame,
 )
-from ...application.dto.get_game_state import GetGameStateInput, GetGameStateOutput
-from ...application.dto.get_valid_moves import GetValidMovesInput, GetValidMovesOutput
-from ...application.dto.place_disc import PlaceDiscInput
-from ...application.dto.pass_turn import PassTurnInput
 from ...domain.repository import GameRepository
+from ..schemas import (
+    CellState,
+    GameStateResponse,
+    Position,
+    StartGameResponse,
+)
 
 
 class GameController:
