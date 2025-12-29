@@ -1,6 +1,7 @@
 from datetime import datetime
 from uuid import UUID
 
+from ..exception import InvalidScoreException
 from .disc import Disc
 
 
@@ -14,9 +15,17 @@ class GameResult:
         finished_at: datetime,
     ):
         if black_score < 0 or black_score > 64:
-            raise ValueError("黒のスコアは0から64の範囲内である必要があります。")
+            raise InvalidScoreException(
+                black_score,
+                white_score,
+                "黒のスコアは0から64の範囲内である必要があります",
+            )
         if white_score < 0 or white_score > 64:
-            raise ValueError("白のスコアは0から64の範囲内である必要があります。")
+            raise InvalidScoreException(
+                black_score,
+                white_score,
+                "白のスコアは0から64の範囲内である必要があります",
+            )
 
         self._game_id = game_id
         self._winner = winner
@@ -25,9 +34,7 @@ class GameResult:
         self._finished_at = finished_at
 
     @classmethod
-    def create(
-        cls, game_id: UUID, black_score: int, white_score: int
-    ) -> "GameResult":
+    def create(cls, game_id: UUID, black_score: int, white_score: int) -> "GameResult":
         """スコアから勝者を判定してGameResultを作成"""
         if black_score > white_score:
             winner = Disc.BLACK
