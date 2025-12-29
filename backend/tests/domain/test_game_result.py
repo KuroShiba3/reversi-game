@@ -1,8 +1,9 @@
 import pytest
 from datetime import datetime
 from uuid import uuid4
-from domain.model.game_result import GameResult
-from domain.model.disc import Disc
+from src.domain.model.game_result import GameResult
+from src.domain.model.disc import Disc
+from src.domain.exception import InvalidScoreException
 
 
 def test_game_result_create_black_wins(mocker):
@@ -11,7 +12,7 @@ def test_game_result_create_black_wins(mocker):
     fixed_time = datetime(2025, 12, 22, 10, 30, 0)
 
     # datetime.nowを固定の時刻にモック
-    mock_datetime = mocker.patch('domain.model.game_result.datetime')
+    mock_datetime = mocker.patch('src.domain.model.game_result.datetime')
     mock_datetime.now.return_value = fixed_time
 
     result = GameResult.create(game_id, black_score=35, white_score=29)
@@ -28,7 +29,7 @@ def test_game_result_create_white_wins(mocker):
     game_id = uuid4()
     fixed_time = datetime(2025, 12, 22, 11, 0, 0)
 
-    mock_datetime = mocker.patch('domain.model.game_result.datetime')
+    mock_datetime = mocker.patch('src.domain.model.game_result.datetime')
     mock_datetime.now.return_value = fixed_time
 
     result = GameResult.create(game_id, black_score=28, white_score=36)
@@ -45,7 +46,7 @@ def test_game_result_create_draw(mocker):
     game_id = uuid4()
     fixed_time = datetime(2025, 12, 22, 12, 0, 0)
 
-    mock_datetime = mocker.patch('domain.model.game_result.datetime')
+    mock_datetime = mocker.patch('src.domain.model.game_result.datetime')
     mock_datetime.now.return_value = fixed_time
 
     result = GameResult.create(game_id, black_score=32, white_score=32)
@@ -58,19 +59,21 @@ def test_game_result_create_draw(mocker):
 
 
 @pytest.mark.parametrize("black_score,white_score,error_message,description", [
-    (-1, 30, "黒のスコアは0から64の範囲内である必要があります。", "黒スコアが負の値"),
-    (65, 30, "黒のスコアは0から64の範囲内である必要があります。", "黒スコアが64超過"),
-    (30, -1, "白のスコアは0から64の範囲内である必要があります。", "白スコアが負の値"),
-    (30, 65, "白のスコアは0から64の範囲内である必要があります。", "白スコアが64超過"),
+    (-1, 30, "黒のスコアは0から64の範囲内である必要があります", "黒スコアが負の値"),
+    (65, 30, "黒のスコアは0から64の範囲内である必要があります", "黒スコアが64超過"),
+    (30, -1, "白のスコアは0から64の範囲内である必要があります", "白スコアが負の値"),
+    (30, 65, "白のスコアは0から64の範囲内である必要があります", "白スコアが64超過"),
 ])
 def test_game_result_invalid_scores(black_score, white_score, error_message, description):
     """無効なスコアでGameResultを作成しようとした場合のテスト"""
     game_id = uuid4()
 
-    with pytest.raises(ValueError) as exc_info:
+    with pytest.raises(InvalidScoreException) as exc_info:
         GameResult(game_id, None, black_score, white_score, datetime.now())
 
-    assert str(exc_info.value) == error_message, f"{description}: エラーメッセージが一致しません"
+    assert exc_info.value.black_score == black_score
+    assert exc_info.value.white_score == white_score
+    assert error_message in str(exc_info.value), f"{description}: エラーメッセージが一致しません"
 
 
 def test_game_result_reconstruct():

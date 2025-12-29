@@ -1,10 +1,11 @@
 import pytest
 from uuid import uuid4
-from domain.model.game import Game
-from domain.model.board import Board
-from domain.model.disc import Disc
-from domain.model.position import Position
-from domain.model.game_status import GameStatus
+from src.domain.model.game import Game
+from src.domain.model.board import Board
+from src.domain.model.disc import Disc
+from src.domain.model.position import Position
+from src.domain.model.game_status import GameStatus
+from src.domain.exception import GameAlreadyFinishedException, CannotPassWithValidMovesException
 
 
 def test_game_create():
@@ -99,23 +100,25 @@ def test_game_get_valid_moves_finished():
 
 
 def test_game_pass_turn():
-    """パスターンのテスト"""
-    game = Game.create()
+    """パスターンのテスト - 有効な手がない場合のみパス可能"""
+    # 有効な手がない盤面を作成
+    cells = {}
+    for row in range(8):
+        for col in range(8):
+            cells[Position(row, col)] = Disc.BLACK
 
-    # 黒のターン
-    assert game.current_player == Disc.BLACK
+    # 白が1マスだけ、黒がパスできる状態
+    cells[Position(0, 0)] = Disc.WHITE
+    cells[Position(0, 1)] = Disc.EMPTY
 
-    # パス
+    board = Board.reconstruct(cells)
+    game = Game.reconstruct(uuid4(), board, Disc.BLACK, GameStatus.PLAYING)
+
+    # 黒は有効な手がないのでパスできる
     game.pass_turn()
 
     # 白のターンに切り替わる
     assert game.current_player == Disc.WHITE
-
-    # もう一度パス
-    game.pass_turn()
-
-    # 黒のターンに戻る
-    assert game.current_player == Disc.BLACK
 
 
 def test_game_can_current_player_move():
@@ -184,7 +187,7 @@ def test_game_finish(mocker):
     # datetime.nowをモック
     from datetime import datetime
     fixed_time = datetime(2025, 12, 22, 15, 0, 0)
-    mock_datetime = mocker.patch('domain.model.game_result.datetime')
+    mock_datetime = mocker.patch('src.domain.model.game_result.datetime')
     mock_datetime.now.return_value = fixed_time
 
     # ゲームを終了
@@ -211,7 +214,7 @@ def test_game_finish_black_wins(mocker):
 
     from datetime import datetime
     fixed_time = datetime(2025, 12, 22, 16, 0, 0)
-    mock_datetime = mocker.patch('domain.model.game_result.datetime')
+    mock_datetime = mocker.patch('src.domain.model.game_result.datetime')
     mock_datetime.now.return_value = fixed_time
 
     game.finish()
@@ -226,10 +229,11 @@ def test_game_finish_already_finished():
     game = Game.create()
     game._status = GameStatus.FINISHED
 
-    with pytest.raises(ValueError) as exc_info:
+    with pytest.raises(GameAlreadyFinishedException) as exc_info:
         game.finish()
 
-    assert str(exc_info.value) == "ゲームはすでに終了しています。"
+    assert exc_info.value.game_id == game.id
+    assert "既に終了" in str(exc_info.value)
 
 
 def test_game_full_gameplay():

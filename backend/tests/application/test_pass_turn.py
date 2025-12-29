@@ -3,7 +3,9 @@ from uuid import uuid4
 
 from src.application.dto.pass_turn import PassTurnInput
 from src.application.usecase import PassTurn
+from src.application.exception import GameNotFoundException
 from src.domain.model import Game, Disc, Position, GameStatus, Board
+from src.domain.exception import CannotPassWithValidMovesException, GameAlreadyFinishedException
 
 from tests.repository import InMemoryGameRepository
 
@@ -27,10 +29,10 @@ async def test_pass_turn_cannot_pass_with_valid_moves(repository, usecase):
     assert len(game.get_valid_moves()) == 4
 
     input_dto = PassTurnInput(str(game.id))
-    with pytest.raises(ValueError) as exc_info:
+    with pytest.raises(CannotPassWithValidMovesException) as exc_info:
         await usecase.execute(input_dto)
 
-    assert "現在のプレイヤーは有効な手があるため、パスできません。" in str(exc_info.value)
+    assert "パスできません" in str(exc_info.value)
 
 
 async def test_pass_turn_game_not_found(repository, usecase):
@@ -38,7 +40,7 @@ async def test_pass_turn_game_not_found(repository, usecase):
     non_existent_id = str(uuid4())
 
     input_dto = PassTurnInput(non_existent_id)
-    with pytest.raises(ValueError) as exc_info:
+    with pytest.raises(GameNotFoundException) as exc_info:
         await usecase.execute(input_dto)
 
     assert f"ゲームが見つかりません: {non_existent_id}" in str(exc_info.value)
@@ -51,10 +53,10 @@ async def test_pass_turn_finished_game(repository, usecase):
     await repository.save(game)
 
     input_dto = PassTurnInput(str(game.id))
-    with pytest.raises(ValueError) as exc_info:
+    with pytest.raises(GameAlreadyFinishedException) as exc_info:
         await usecase.execute(input_dto)
 
-    assert "ゲームはすでに終了しています。" in str(exc_info.value)
+    assert "終了しています" in str(exc_info.value)
 
 
 async def test_pass_turn_alternates_players(repository, usecase):

@@ -3,7 +3,9 @@ from uuid import uuid4
 
 from src.application.dto.place_disc import PlaceDiscInput
 from src.application.usecase import PlaceDisc
+from src.application.exception import GameNotFoundException
 from src.domain.model import Game, Disc, Position, GameStatus, Board
+from src.domain.exception import InvalidMoveException, GameAlreadyFinishedException
 
 from tests.repository import InMemoryGameRepository
 
@@ -45,7 +47,7 @@ async def test_place_disc_game_not_found(repository, usecase):
         game_id=non_existent_id,
         position={"row": 2, "col": 3}
     )
-    with pytest.raises(ValueError) as exc_info:
+    with pytest.raises(GameNotFoundException) as exc_info:
         await usecase.execute(input_dto)
 
     assert f"ゲームが見つかりません: {non_existent_id}" in str(exc_info.value)
@@ -61,10 +63,10 @@ async def test_place_disc_finished_game(repository, usecase):
         game_id=str(game.id),
         position={"row": 2, "col": 3}
     )
-    with pytest.raises(ValueError) as exc_info:
+    with pytest.raises(GameAlreadyFinishedException) as exc_info:
         await usecase.execute(input_dto)
 
-    assert "ゲームはすでに終了しています。" in str(exc_info.value)
+    assert "終了しています" in str(exc_info.value)
 
 
 async def test_place_disc_invalid_position(repository, usecase):
@@ -76,7 +78,7 @@ async def test_place_disc_invalid_position(repository, usecase):
         game_id=str(game.id),
         position={"row": 0, "col": 0}
     )
-    with pytest.raises(ValueError):
+    with pytest.raises(InvalidMoveException):
         await usecase.execute(input_dto)
 
 

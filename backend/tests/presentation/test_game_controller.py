@@ -8,7 +8,9 @@ from src.presentation.schemas import (
     CellState,
     Position,
 )
+from src.application.exception import GameNotFoundException
 from src.domain.model import Game, Disc, Position as DomainPosition, Board
+from src.domain.exception import InvalidMoveException, CannotPassWithValidMovesException
 
 from tests.repository import InMemoryGameRepository
 
@@ -107,8 +109,8 @@ async def test_place_disc_game_not_found(controller):
     # Arrange: 存在しないゲームID
     invalid_game_id = "00000000-0000-0000-0000-000000000000"
 
-    # Act & Assert: ValueErrorが発生
-    with pytest.raises(ValueError) as exc_info:
+    # Act & Assert: GameNotFoundExceptionが発生
+    with pytest.raises(GameNotFoundException) as exc_info:
         await controller.place_disc(invalid_game_id, 2, 3)
 
     assert "ゲームが見つかりません" in str(exc_info.value)
@@ -122,7 +124,7 @@ async def test_place_disc_invalid_position(controller):
     game_id = start_response.game_id
 
     # Act & Assert: 無効な位置(0, 0)に置こうとするとエラー
-    with pytest.raises(ValueError):
+    with pytest.raises(InvalidMoveException):
         await controller.place_disc(game_id, 0, 0)
 
 
@@ -184,8 +186,8 @@ async def test_pass_turn_game_not_found(controller):
     # Arrange: 存在しないゲームID
     invalid_game_id = "00000000-0000-0000-0000-000000000000"
 
-    # Act & Assert: ValueErrorが発生
-    with pytest.raises(ValueError) as exc_info:
+    # Act & Assert: GameNotFoundExceptionが発生
+    with pytest.raises(GameNotFoundException) as exc_info:
         await controller.pass_turn(invalid_game_id)
 
     assert "ゲームが見つかりません" in str(exc_info.value)
@@ -199,7 +201,7 @@ async def test_pass_turn_with_valid_moves_raises_error(controller):
     game_id = start_response.game_id
 
     # Act & Assert: 有効手があるのでパスできない
-    with pytest.raises(ValueError) as exc_info:
+    with pytest.raises(CannotPassWithValidMovesException) as exc_info:
         await controller.pass_turn(game_id)
 
     assert "パスできません" in str(exc_info.value)

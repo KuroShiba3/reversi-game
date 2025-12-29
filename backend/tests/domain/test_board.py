@@ -1,7 +1,8 @@
 import pytest
-from domain.model.board import Board
-from domain.model.disc import Disc
-from domain.model.position import Position
+from src.domain.model.board import Board
+from src.domain.model.disc import Disc
+from src.domain.model.position import Position
+from src.domain.exception import InvalidMoveException
 
 
 def test_board_create():
@@ -310,13 +311,13 @@ def test_place_disc_invalid_position(
 
         board = Board.reconstruct(cells)
 
-    # ValueErrorが発生することを確認
-    with pytest.raises(ValueError) as exc_info:
+    # InvalidMoveExceptionが発生することを確認
+    with pytest.raises(InvalidMoveException) as exc_info:
         board.place_disc(place_pos, disc)
 
     # エラーメッセージが正しいことを確認
-    assert str(exc_info.value) == error_message, (
-        f"{description}: エラーメッセージが一致しません"
+    assert error_message in str(exc_info.value), (
+        f"{description}: エラーメッセージに期待する文字列が含まれていません"
     )
 
 

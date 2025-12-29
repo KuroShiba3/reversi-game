@@ -1,5 +1,6 @@
 import pytest
-from domain.model.position import Position
+from src.domain.model.position import Position
+from src.domain.exception import InvalidPositionException
 
 
 def test_position_create_valid():
@@ -43,11 +44,13 @@ def test_position_create_boundaries():
 ])
 def test_position_create_invalid(row, col, description):
     """無効な位置の作成テスト"""
-    with pytest.raises(ValueError) as exc_info:
+    with pytest.raises(InvalidPositionException) as exc_info:
         Position(row, col)
 
-    assert str(exc_info.value) == "行と列は0から7の範囲内である必要があります。", \
-        f"{description}: エラーメッセージが一致しません"
+    assert exc_info.value.row == row
+    assert exc_info.value.col == col
+    assert "盤面外" in str(exc_info.value), \
+        f"{description}: エラーメッセージに'盤面外'が含まれていません"
 
 
 def test_position_equality():
