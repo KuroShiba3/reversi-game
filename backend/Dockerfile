@@ -1,4 +1,3 @@
-# ビルドステージ
 FROM ghcr.io/astral-sh/uv:0.9.2-python3.13-bookworm-slim AS builder
 WORKDIR /app
 ENV UV_LINK_MODE=copy
@@ -19,8 +18,8 @@ FROM python:3.13-slim-bookworm AS production
 WORKDIR /app
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH=/app
+ENV PATH="/app/.venv/bin:$PATH"
 COPY --from=builder /app/.venv /app/.venv
 COPY ./src ./src
 COPY ./migrations ./migrations
-ENV PATH="/app/.venv/bin:$PATH"
 CMD ["python", "-m", "src.main"]
