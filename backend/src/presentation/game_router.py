@@ -1,9 +1,17 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 
-from .schemas import StartGameResponse, GameStateResponse, PlaceDiscRequest
-from .controller import GameController
+from ..application.exception import GameNotFoundException
+from ..domain.exception import (
+    CannotPassWithValidMovesException,
+    GameAlreadyFinishedException,
+    InvalidMoveException,
+    InvalidPositionException,
+)
 from ..infrastructure.database.connection_pool import DatabasePool
+from ..infrastructure.exception import RepositoryException
 from ..infrastructure.repository import GameRepositoryImpl
+from .controller import GameController
+from .schemas import GameStateResponse, PlaceDiscRequest, StartGameResponse
 
 router = APIRouter(prefix="/api/games", tags=["games"])
 
@@ -35,10 +43,60 @@ async def place_disc(
     """指定した位置に石を置く"""
     try:
         return await controller.place_disc(game_id, request.row, request.col)
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+
+    except GameNotFoundException as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={"error": "game_not_found", "game_id": e.game_id},
+        )
+
+    except InvalidPositionException as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={
+                "error": "invalid_position",
+                "row": e.row,
+                "col": e.col,
+                "message": str(e),
+            },
+        )
+
+    except InvalidMoveException as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={
+                "error": "invalid_move",
+                "row": e.row,
+                "col": e.col,
+                "disc": e.disc_name,
+                "reason": e.reason,
+            },
+        )
+
+    except GameAlreadyFinishedException as e:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={"error": "game_already_finished", "game_id": str(e.game_id)},
+        )
+
+    except RepositoryException as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={
+                "error": "repository_error",
+                "operation": e.operation,
+                "message": str(e),
+            },
+        )
+
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={
+                "error": "internal_error",
+                "message": str(e),
+            },
+        )
 
 
 @router.post("/{game_id}/pass", response_model=GameStateResponse)
@@ -49,7 +107,45 @@ async def pass_turn(
     """現在のプレイヤーのターンをパスする"""
     try:
         return await controller.pass_turn(game_id)
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+
+    except GameNotFoundException as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={"error": "game_not_found", "game_id": e.game_id},
+        )
+
+    except CannotPassWithValidMovesException as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={
+                "error": "cannot_pass_with_valid_moves",
+                "player": e.current_player_name,
+                "valid_moves_count": e.valid_moves_count,
+                "message": str(e),
+            },
+        )
+
+    except GameAlreadyFinishedException as e:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={"error": "game_already_finished", "game_id": str(e.game_id)},
+        )
+
+    except RepositoryException as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={
+                "error": "repository_error",
+                "operation": e.operation,
+                "message": str(e),
+            },
+        )
+
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={
+                "error": "internal_error",
+                "message": str(e),
+            },
+        )
