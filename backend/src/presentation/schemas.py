@@ -12,13 +12,6 @@ class CellState(BaseModel):
     disc: str
 
 
-class StartGameResponse(BaseModel):
-    game_id: str
-    board_state: list[CellState]
-    current_player: str
-    status: str
-
-
 class GameStateResponse(BaseModel):
     board_state: list[CellState]
     current_player: str
@@ -26,6 +19,10 @@ class GameStateResponse(BaseModel):
     white_score: int
     status: str
     valid_moves: list[Position]
+
+
+class StartGameResponse(GameStateResponse):
+    game_id: str
 
 
 class PlaceDiscRequest(BaseModel):

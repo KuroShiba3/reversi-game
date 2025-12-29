@@ -2,7 +2,7 @@ import pytest
 from uuid import UUID
 
 from src.application.usecase import StartGame
-from src.domain.model import Disc, Position
+from src.domain.model import Disc, GameStatus, Position
 
 from tests.repository import InMemoryGameRepository
 
@@ -19,36 +19,41 @@ def usecase(repository):
 
 async def test_start_game_creates_new_game(repository, usecase):
     """新しいゲームが作成される"""
-    result = await usecase.execute()
+    game_id = await usecase.execute()
 
-    assert result.game_id is not None
-    game_id = UUID(result.game_id)
+    assert game_id is not None
+    assert isinstance(game_id, UUID)
 
     saved_game = await repository.find_by_id(game_id)
     assert saved_game is not None
     assert saved_game.id == game_id
 
 
-async def test_start_game_initial_state(usecase):
+async def test_start_game_initial_state(repository, usecase):
     """初期状態が正しく設定される"""
-    result = await usecase.execute()
+    game_id = await usecase.execute()
 
-    assert result.current_player == "BLACK"
-    assert result.status == "playing"
+    saved_game = await repository.find_by_id(game_id)
+    assert saved_game.current_player == Disc.BLACK
+    assert saved_game.status == GameStatus.PLAYING
 
-    assert len(result.board_state) == 64
 
-
-async def test_start_game_initial_board_setup(usecase):
+async def test_start_game_initial_board_setup(repository, usecase):
     """初期盤面が正しくセットアップされる"""
-    result = await usecase.execute()
+    game_id = await usecase.execute()
 
-    board_dict = {(cell["row"], cell["col"]): cell["disc"] for cell in result.board_state}
+    saved_game = await repository.find_by_id(game_id)
+    board = saved_game.board
 
-    assert board_dict[(3, 3)] == "WHITE"
-    assert board_dict[(3, 4)] == "BLACK"
-    assert board_dict[(4, 3)] == "BLACK"
-    assert board_dict[(4, 4)] == "WHITE"
+    # 中央4マスの初期配置を確認
+    assert board.cells[Position(3, 3)] == Disc.WHITE
+    assert board.cells[Position(3, 4)] == Disc.BLACK
+    assert board.cells[Position(4, 3)] == Disc.BLACK
+    assert board.cells[Position(4, 4)] == Disc.WHITE
 
-    empty_count = sum(1 for cell in result.board_state if cell["disc"] == "EMPTY")
-    assert empty_count == 60
+    # 全マス数を確認（64マス全て）
+    assert len(board.cells) == 64
+
+    # 石が置かれているマス数を確認（EMPTYでないマス）
+    non_empty_count = sum(1 for disc in board.cells.values() if disc != Disc.EMPTY)
+    assert non_empty_count == 4

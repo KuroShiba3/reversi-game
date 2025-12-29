@@ -29,18 +29,18 @@ class GameController:
     async def start_game(self) -> StartGameResponse:
         """新しいゲームを開始する"""
         usecase = StartGame(self._game_repository)
-        result = await usecase.execute()
+        game_id = await usecase.execute()
 
-        board_state = [
-            CellState(row=cell["row"], col=cell["col"], disc=cell["disc"])
-            for cell in result.board_state
-        ]
+        state_result = await self._get_game_state_response(str(game_id))
 
         return StartGameResponse(
-            game_id=result.game_id,
-            board_state=board_state,
-            current_player=result.current_player,
-            status=result.status,
+            game_id=str(game_id),
+            board_state=state_result.board_state,
+            current_player=state_result.current_player,
+            black_score=state_result.black_score,
+            white_score=state_result.white_score,
+            status=state_result.status,
+            valid_moves=state_result.valid_moves,
         )
 
     async def place_disc(self, game_id: str, row: int, col: int) -> GameStateResponse:
@@ -54,7 +54,6 @@ class GameController:
             )
         )
 
-        # 更新後のゲーム状態を返す
         return await self._get_game_state_response(game_id)
 
     async def pass_turn(self, game_id: str) -> GameStateResponse:
@@ -63,7 +62,6 @@ class GameController:
         usecase = PassTurn(self._game_repository)
         await usecase.execute(PassTurnInput(game_id))
 
-        # 更新後のゲーム状態を返す
         return await self._get_game_state_response(game_id)
 
     async def _get_game_state_response(self, game_id: str) -> GameStateResponse:
