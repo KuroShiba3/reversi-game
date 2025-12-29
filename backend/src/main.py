@@ -1,9 +1,10 @@
-from fastapi import FastAPI
-import uvicorn
 from contextlib import asynccontextmanager
 
-from .infrastructure.database.migration import run_migrations
+import uvicorn
+from fastapi import FastAPI
+
 from .infrastructure.database.connection_pool import DatabasePool
+from .infrastructure.database.migration import run_migrations
 from .presentation.game_router import router as game_router
 
 
@@ -27,20 +28,13 @@ async def lifespan(app: FastAPI):
     print("データベース接続プールをクローズしました。")
 
 
-app = FastAPI(
-    title="Reversi Game API",
-    description="リバーシゲームのバックエンドAPI",
-    version="1.0.0",
-    lifespan=lifespan,
-)
+app = FastAPI(lifespan=lifespan)
 
-# ゲームルーターを登録
 app.include_router(game_router)
 
 
 @app.get("/health")
 async def health():
-    """ヘルスチェックエンドポイント"""
     return {"status": "healthy"}
 
 
