@@ -1,6 +1,7 @@
-from ...domain.repository import GameRepository
 from ...domain.model import Game
-from ..dto.start_game import StartGameOutput
+from ...domain.repository import GameRepository
+from ..dto import StartGameOutput
+
 
 class StartGame:
     def __init__(self, game_repository: GameRepository):
@@ -19,5 +20,5 @@ class StartGame:
             str(new_game.id),
             board_state,
             new_game.current_player.name,
-            new_game.status.value
+            new_game.status.value,
         )
