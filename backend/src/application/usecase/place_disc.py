@@ -1,8 +1,10 @@
 from uuid import UUID
 
+from ...domain.exception import GameAlreadyFinishedException
 from ...domain.model import GameStatus, Position
 from ...domain.repository import GameRepository
-from ..dto.place_disc import PlaceDiscInput
+from ..dto import PlaceDiscInput
+from ..exception import GameNotFoundException
 
 
 class PlaceDisc:
@@ -13,18 +15,16 @@ class PlaceDisc:
         game = await self._game_repository.find_by_id(UUID(input_dto.game_id))
 
         if game is None:
-            raise ValueError(f"ゲームが見つかりません: {input_dto.game_id}")
+            raise GameNotFoundException(input_dto.game_id)
 
         if game.status == GameStatus.FINISHED:
-            raise ValueError("ゲームはすでに終了しています。")
+            raise GameAlreadyFinishedException(UUID(input_dto.game_id))
 
         position = Position(input_dto.position["row"], input_dto.position["col"])
 
         game.place_disc(position)
 
-        # ゲーム終了判定
         if game.is_game_over():
             game.finish()
 
-        # ゲームを保存
         await self._game_repository.save(game)
